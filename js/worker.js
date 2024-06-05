@@ -1,4 +1,5 @@
-importScripts("/sampling-calculator-ua/js/global_snippet.js");
+// temp solution
+importScripts(`${location.hostname === "127.0.0.1" ? "" : "/sampling-calculator-ua"}/js/global_snippet.js`);
 
 self.addEventListener("message", function(xs) {
 	postMessage(round_table(xs.data));
