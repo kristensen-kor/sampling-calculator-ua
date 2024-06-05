@@ -1,4 +1,4 @@
-importScripts("/js/global_snippet.js");
+importScripts("/sampling-calculator-ua/js/global_snippet.js");
 
 self.addEventListener("message", function(xs) {
 	postMessage(round_table(xs.data));
