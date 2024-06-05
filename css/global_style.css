@@ -1,0 +1,50 @@
+.main-link {
+	text-decoration: none;
+	color: inherit;
+}
+
+h1 {
+	display: inline-block;
+}
+
+header {
+	margin-bottom: 10px;
+}
+
+.hidden {
+	display: none;
+}
+
+h1, h2, h3, h4 {
+	margin: 0;
+	padding-bottom: 6px;
+}
+
+body {
+	/*font-family: tahoma;*/
+	/*font-size: 11px;*/
+	user-select:none;
+	-webkit-user-select: none;
+	/*padding-left: 10px;*/
+	padding: 10px;
+}
+
+.dsinbl {
+	display: inline-block;
+}
+
+.home-link:hover {
+	color: #268bd2;
+}
+
+.home-link {
+	margin-right: 9px;
+}
+
+
+.flex_header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}

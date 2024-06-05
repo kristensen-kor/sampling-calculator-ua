@@ -1,0 +1,459 @@
+/* .main {
+	display: table;
+}
+
+.table-cell {
+	display: table-cell;
+}
+ */
+.res-cell {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+.subwindow {
+	display: inline-block;
+	float: left;
+	/* max-width: calc(100% - 4px); */
+	/* float: left; */
+	/* display: block; */
+	/* width: calc(50% - 4px); */
+	/* box-sizing: border-box; */
+	/* margin: 0; */
+	/* padding: 0; */
+	/* border: 1px solid red; */
+}
+
+.result {
+	/* display: inline-block; */
+	/* display: table-cell; */
+}
+
+
+.param-block {
+	width: 100%;
+	/*border: 1px dotted #657b83;*/
+	border-color: #fdf6e3;
+
+	/* background: #F3EDDA; */
+}
+
+.param-header {
+	/* background: #F7F4EA; */
+}
+
+.param-block:not(:last-child) {
+	margin-bottom: 3px;
+}
+
+.block-opened {
+	border: 1px dotted #657b83;
+	/* margin-bottom: 20px; */
+	/* margin-top: 5px; */
+}
+
+/* .params { */
+	/* min-width: 500px; */
+	/* max-width: 700px; */
+/* } */
+
+.param-header {
+	display: table;
+	width: 100%;
+	padding: 2px;
+}
+
+.param-arrow {
+	width: 1em;
+}
+
+.param-name, .param-string, .param-arrow {
+	display: table-cell;
+}
+
+.param-string {
+	text-align: right;
+	padding-left: 20px;
+	padding-right: 10px;
+}
+
+.param-name {
+	vertical-align: top;
+	white-space: nowrap;
+	padding-right: 2px;
+}
+
+.param-controls {
+	padding: 2px;
+}
+
+.param-header:hover, .block-opened .param-header:hover {
+	background: #DFDAC7;
+	/* background: #eee8d5; */
+}
+
+.block-opened .param-header {
+	background: #eee8d5;
+	/* background: #F3EDDA; */
+}
+
+.block-opened:hover {
+	border-color: #268bd2;
+}
+
+
+.status-text {
+	/* display: block; */
+	width: 100%;
+	height: 5em;
+}
+
+.result-sample-table td, .result-sample-table th {
+	white-space: nowrap;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.result-sample-table td {
+	font-size: 14px;
+}
+
+/* .result-sample-table td:nth-child(2), .result-sample-table td:nth-child(1) { */
+	/* max-width: 120px; */
+	/* text-overflow: ellipsis; */
+	/* overflow: hidden; */
+/* } */
+
+.ellipsis {
+	max-width: 120px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.ellipsis:hover {
+	text-overflow: clip;
+	white-space: normal;
+	word-break: break-all;
+}
+
+.result-sample:hover {
+	background: #eee8d5;
+}
+
+.dsinbl {
+	display: inline-block;
+}
+
+label {
+	display: block;
+	/*background: #002b36;*/
+}
+
+div {
+	/*overflow: hidden;*/
+}
+
+.age_cell {
+	height: 24px;
+	/* border: 1px solid black; */
+	display: table-cell;
+	/* vertical-align: center; */
+}
+
+.age_edge {
+	width: 5px;
+	height: 6px;
+	background: #2aa198;
+	/* display: inline; */
+	display: inline-block;
+	/* display: table-cell; */
+	vertical-align: middle;
+}
+
+.age_edge.special {
+	display: none;
+}
+
+.clicked {
+	opacity: 0;
+}
+
+.age_caption {
+	font-size: 12px;
+	/* display: inline; */
+	display: inline-block;
+	/* display: table-cell; */
+	vertical-align: middle;
+	/* border: 1px solid #2aa198; */
+	/* width: 20px; */
+	/* border-radius: 100%; */
+	text-align: center;
+	/* display: none; */
+	/* width: 0px; */
+	cursor: default;
+}
+
+.age_cell:hover .age_edge {
+	opacity: 0.5;
+	background: #268bd2;
+}
+
+
+
+/*table*/
+.table {
+	display: table;
+	/*border-collapse:collapse;*/
+}
+
+.cell {
+	display: table-cell;
+}
+
+.row {
+	display: table-row;
+}
+
+.collapse {
+	border-collapse:collapse;
+}
+
+
+.text_right {
+	text-align: right;
+}
+
+/*age quota*/
+#f_age_groups {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.node, .edge {
+	display: table-cell;
+}
+
+.node {
+	position: relative;
+	width: 0;
+	pointer-events: none;
+}
+
+.edge {
+	width: 17px;
+	height: 14px;
+}
+
+.node-delim {
+	position: absolute;
+	background: #2aa198;
+	width: 1px;
+	height: 8px;
+	left: -1px;
+	border-radius: 2px;
+}
+
+.edge-line {
+	height: 3px;
+	background: #2aa198;
+	width: 100%;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.edge-line-invis {
+	background: none;
+}
+
+.node-caption {
+	position: absolute;
+	width: 20px;
+	text-align: center;
+	top: 10px;
+	left: -10px;
+	font-size: 0.75em;
+	font-family: consolas;
+}
+
+.edge:hover .edge-line {
+	/* background: #268bd2; */
+	background: none;
+}
+
+.edge:hover .edge-line-invis {
+	background: #268bd2;
+}
+
+
+
+/*blocks*/
+
+.sub_block {
+	/*display: cell;*/
+	/*vertical-align: top;*/
+	border: 1px dotted #657b83;
+	/*border: 1px solid #657b83;*/
+	padding: 2px;
+	/*margin: 20px;*/
+	background: #fdf6e3;
+}
+
+.sub_block_wrapper {
+	padding: 2px;
+}
+
+.sub_block:hover {
+	/*border-color: #93a1a1;*/
+	border-color: #268bd2;
+}
+
+.mb_soc .sub_block {
+	/*padding-bottom: 19px;*/
+	padding-right: 11px;
+	padding-left: 3px;
+}
+
+.f_cities tr:hover label {
+	color: #268bd2;
+}
+
+.f_population_custom {
+	width: 6ch;
+}
+
+.width_6ch {
+	width: 6ch;
+}
+
+#f_strata input {
+	width: 6ch;
+}
+
+.f_age {
+	width: 5ch;
+}
+
+.f_age_groups_reset {
+	margin-top: 19px;
+}
+
+#f_ssize {
+	width: 8ch;
+}
+
+#f_csize {
+	width: 6ch;
+}
+
+div {
+	/*border: 1px solid red;*/
+}
+
+#input_sql_commands {
+	width: 700px;
+	height: 200px;
+}
+
+#debug_result_output {
+	width: 700px;
+	height: 200px;
+}
+
+
+.button-calc {
+	margin-left: 5px;
+	padding: 10px;
+	/*height: 4ch;*/
+	/*width: 8ch;*/
+}
+
+.res-table-short td {
+	border-bottom: 1px solid #93a1a1;
+}
+
+.res-cell {
+	min-width: 15px;
+}
+
+.hidden-textarea {
+	resize: none;
+	overflow: hidden;
+	width: 0;
+	height: 0;
+	border: 0;
+	outline: 0;
+	opacity: 0;
+}
+
+.copy-buttons {
+	/* display: block; */
+	margin-bottom: 3px;
+}
+
+.hidden {
+	display: none;
+}
+
+.param-string {
+	font-style: italic;
+}
+
+.export-menu {
+	display: inline-block;
+	margin-bottom: 10px;
+}
+
+.export-menu-name {
+	color: #2aa198;
+}
+
+.export-menu-name-active {
+	color: #268bd2;
+}
+
+.export-menu-name {
+	border: 1px solid #93a1a1;
+	padding: 2px;
+}
+
+.export-menu-item {
+	/* border-color: #93a1a1; */
+	/* border-style: solid; */
+	border-left: 1px solid #93a1a1;
+	border-right: 1px solid #93a1a1;
+	border-bottom: 1px solid #93a1a1;
+}
+
+.export-menu-item {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.export-menu-arrow {
+	display: inline;
+}
+
+
+.pb-solarized {
+	color: #2aa198;
+	background: #fdf6e3;
+
+}
+
+.pb-solarized:focus {
+	outline-color: #268bd2;
+	color: #268bd2;
+}
+
+.pb-solarized:hover {
+	color: #268bd2;
+}
+
+.pb-solarized:disabled {
+	color: #93a1a1;
+}
+
+
+
+
+/* transitions */
