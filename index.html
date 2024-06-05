@@ -125,7 +125,7 @@
 			</thead>
 			<tbody class="f_cities">
 				<tr v-for="city of cities" :key="city.id">
-					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]"></td>
+					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]" :disabled="city[4] == 'NA'"></td>
 					<td><label :for="city[0]">{{ city[2] }}</label></td>
 					<td><label :for="city[0]">{{ city[3] }}</label></td>
 					<td class="text_right"><label :for="city[0]">{{ city[4] }}</label></td>
