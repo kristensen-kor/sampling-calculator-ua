@@ -58,6 +58,41 @@ function copy_to_clipboard(data) {
 	node.remove();
 }
 
+function dice(xs) {
+	let total = sum(xs);
+
+	let rnd = Math.random() * total;
+
+	let acc = 0;
+
+	for (let i = 0; i < xs.length; i++) {
+		acc += xs[i];
+
+		if (rnd < acc) return i;
+	}
+
+	return xs.length - 1;
+}
+
+function lr_round(xs) {
+	let base_array = xs.map(Math.floor);
+
+	const difference = round(sum(xs)) - sum(base_array);
+
+	const remainders = xs.map((num, index) => [num - Math.floor(num), index]).toSorted((a, b) => b[0] - a[0]);
+
+	for (let i = 0; i < difference; i++) {
+		base_array[remainders[i][1]]++;
+	}
+
+	return base_array;
+}
+
+function to_matrix(xs, rows) {
+	const cols = xs.length / rows;
+	return Array.from({ length: rows }, (_, i) => xs.slice(i * cols, (i + 1) * cols));
+}
+
 function new_node(tagname, cl, attr, text, child_node) {
 	let node = document.createElement(tagname);
 

@@ -3,6 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 
+	<title>Sampling calculator UA</title>
+
 	<!-- <link rel="stylesheet" href="css\normalize5.css"> -->
 	<!-- <link rel="stylesheet" href="css\normalize8.css"> -->
 	<!-- <link rel="stylesheet" href="css\standard.css"> -->
@@ -21,17 +23,16 @@
 	<!-- <script src="js\vue_blocks.js" defer></script> -->
 	<script type="module" src="js/main.js"></script>
 
-	<title>Sampling calculator UA</title>
 </head>
 <body>
 
 	<header class="flex_header">
-		<h1>
-			<a href="/main" class="main-link home-link">&#9634;</a><!--
-		 --><a href="" class="main-link">Калькулятор выборки</a>
+		<h1 style="display: flex;">
+			<a href="/.." class="main-link home-link">&#9634;</a>
+			<a href="" class="main-link">Калькулятор выборки</a>
 		</h1>
-		<!-- <button class="logout" onclick="window.location = '/logout'">Logout</button> -->
 	</header>
+
 
 
 	<div id="app">
@@ -278,12 +279,12 @@
 				<table class="result-table">
 					<thead>
 						<tr>
-							<th v-for="rec of result_header" :key="rec.id" @click="sort(rec)">{{ rec }}<th>
+							<th v-for="(rec, i) of result_header" @click="sort(i)">{{ rec }}<th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="rec of display_table" :key="rec.id">
-							<td v-for="cell of rec" :key="cell.id">{{ cell }}<td>
+						<tr v-for="(rec, id1) of display_table" :key="id1">
+							<td v-for="(cell, id2) of rec" :key="id2">{{ cell }}<td>
 						</tr>
 					</tbody>
 				</table>
