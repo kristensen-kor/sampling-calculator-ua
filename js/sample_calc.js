@@ -109,17 +109,6 @@ function sample_calc(sample_params) {
 	strata = {};
 
 	if (["standard", "online", "gp"].includes(sample_params["calc_type"])) {
-		// struct Stratum {
-		// 	Stratum_def stratum_def;
-		// 	Cluster[] clusters;
-		// 	Cluster[] sample_clusters;
-		// 	real gp;
-		// 	real[] quotas_gp;
-		// 	real sample;
-		// 	real[] quotas_sample;
-		// 	size_t cluster_count;
-		// }
-
 
 		for (let x of local_main_db) {
 			let stratum_region = sample_params["regions"][x.oblast];

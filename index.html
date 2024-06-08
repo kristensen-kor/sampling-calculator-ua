@@ -42,7 +42,6 @@
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_calc_type-component" name_text="Тип расчёта"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_base-component" name_text="База"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_oblasts-component" name_text="Области" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_ato-component" name_text="Зона АТО" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
@@ -57,7 +56,7 @@
 			</div>
 
 			<hr>
-			<button class="button-calc" @click="calc" :disabled="state == 'loading'">Посчитать</button>
+			<button class="button-calc" @click="calc">Посчитать</button>
 		</fieldset>
 
 		<result-block :state="state" :query="query" :data="data" v-show="state != 'off'"></result-block>
@@ -82,8 +81,8 @@
 <template id="p_calc_type-component">
 	<div>
 		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="online">{{ items.online }}</label>
-		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="standard">{{ items.standard }}</label>
 		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="cities">{{ items.cities }}</label>
+		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="standard">{{ items.standard }}</label>
 		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="gp">{{ items.gp }}</label>
 		<label><input type="radio" v-model="v_calc_type" name="f_calc_type" value="gp_cities">{{ items.gp_cities }}</label>
 		<br>
@@ -110,10 +109,6 @@
 		<button @click="select_all">Выбрать всё</button>
 		<button @click="clear_selection">Снять выделение</button>
 	</div>
-</template>
-
-<template id="p_ato-component">
-	<label><input type="checkbox" v-model="v_ato">Исключить зону АТО</label>
 </template>
 
 <template id="p_cities-component">
@@ -258,8 +253,8 @@
 	<fieldset class="subwindow">
 			<legend>Результат</legend>
 
-			<div v-show="state == 'loading'">Loading</div>
-			<div v-show="state == 'error'">Error</div>
+			<!-- <div v-show="state == 'loading'">Loading</div> -->
+			<!-- <div v-show="state == 'error'">Error</div> -->
 
 			<div v-if="state == 'ready'">
 

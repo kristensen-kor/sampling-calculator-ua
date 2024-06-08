@@ -1,6 +1,8 @@
 import { createApp } from "./vue.esm-browser.js";
 // import { createApp } from "./vue.esm-browser.prod.js";
 
+import default_sample_params from "./default_sample_params.js";
+
 let t0 = null;
 
 const result_block = {
@@ -152,15 +154,8 @@ const result_block = {
 			if (order_before == order_after) this.display_table = this.display_table.sort(cmp(index, -1));
 		},
 		copy: function(x) {
-			let node = $$(".hidden-textarea");
-
-			if (x == "cities_correspondence") node.value = this.cities_correspondence;
-			if (x == "table") node.value = this.result_text;
-
-			node.focus();
-			node.select();
-			document.execCommand("copy");
-			node.blur();
+			if (x == "cities_correspondence") copy_to_clipboard(this.cities_correspondence);
+			if (x == "table") copy_to_clipboard(this.result_text);
 		}
 	},
 	watch: {
@@ -173,130 +168,11 @@ const result_block = {
 }
 
 
-
 let app_config = {};
 
 app_config.data = function() {
 	return {
-		sample_params: {
-			"calc_type": "online",
-			"calc_type_quotas": true,
-			"calc_type_gender_split": true,
-			"calc_type_age_split": true,
-			"base": "2020w2_war",
-			"oblasts": [
-				"Вінницька",
-				"Волинська",
-				"Дніпропетровська",
-				"Донецька",
-				"Житомирська",
-				"Закарпатська",
-				"Запорізька",
-				"Івано-Франківська",
-				"Київ",
-				"Київська",
-				"Кіровоградська",
-				"Луганська",
-				"Львівська",
-				"Миколаївська",
-				"Одеська",
-				"Полтавська",
-				"Рівненська",
-				"Сумська",
-				"Тернопільська",
-				"Харківська",
-				"Херсонська",
-				"Хмельницька",
-				"Черкаська",
-				"Чернівецька",
-				"Чернігівська"
-			],
-			"not_is_ato": true,
-			"cities": ["Київ", "Харків", "Одеса", "Дніпро", "Львів"],
-			"types": ["Місто", "СМТ"],
-			"population more than": 0,
-			"population less than": 0,
-			"regions": {
-				"АР Крим": "Юг",
-				"Вінницька": "Центр",
-				"Волинська": "Запад",
-				"Дніпропетровська": "Восток",
-				"Донецька": "Восток",
-				"Житомирська": "Север",
-				"Закарпатська": "Запад",
-				"Запорізька": "Восток",
-				"Івано-Франківська": "Запад",
-				"Київ": "Киев",
-				"Київська": "Север",
-				"Кіровоградська": "Центр",
-				"Луганська": "Восток",
-				"Львівська": "Запад",
-				"Миколаївська": "Юг",
-				"Одеська": "Юг",
-				"Полтавська": "Центр",
-				"Рівненська": "Запад",
-				"Сумська": "Восток",
-				"Тернопільська": "Запад",
-				"Харківська": "Восток",
-				"Херсонська": "Юг",
-				"Хмельницька": "Запад",
-				"Черкаська": "Центр",
-				"Чернівецька": "Запад",
-				"Чернігівська": "Север"
-			},
-			"no_type_stratification": false,
-			"split points": [500, 50],
-			"is_smt_split": false,
-			"split point names": ["500k+", "500k-50k", "50k-"],
-			"gender": ["m", "f"],
-			"age more than": 18,
-			"age less than": 55,
-			"age breakpoints": [],
-			"age intervals": {
-				16: "16-55",
-				17: "16-55",
-				18: "16-55",
-				19: "16-55",
-				20: "16-55",
-				21: "16-55",
-				22: "16-55",
-				23: "16-55",
-				24: "16-55",
-				25: "16-55",
-				26: "16-55",
-				27: "16-55",
-				28: "16-55",
-				29: "16-55",
-				30: "16-55",
-				31: "16-55",
-				32: "16-55",
-				33: "16-55",
-				34: "16-55",
-				35: "16-55",
-				36: "16-55",
-				37: "16-55",
-				38: "16-55",
-				39: "16-55",
-				40: "16-55",
-				41: "16-55",
-				42: "16-55",
-				43: "16-55",
-				44: "16-55",
-				45: "16-55",
-				46: "16-55",
-				47: "16-55",
-				48: "16-55",
-				49: "16-55",
-				50: "16-55",
-				51: "16-55",
-				52: "16-55",
-				53: "16-55",
-				54: "16-55",
-				55: "16-55"
-			},
-			"sample size": 400,
-			"cluster size": 12
-		},
+		sample_params: default_sample_params,
 		state: "off",
 		query: {},
 		data: {}
@@ -309,18 +185,20 @@ app_config.components = {
 };
 
 app_config.computed = {
+	is_gp_calc: function() {
+		return ["gp", "gp_cities"].includes(this.sample_params["calc_type"]);
+	},
 	cities_show: function() {
 		return (this.sample_params["calc_type"] == "cities" || this.sample_params["calc_type"] == "gp_cities");
 	},
 	quota_show: function() {
-		return (!(this.sample_params["calc_type"] == "gp" || this.sample_params["calc_type"] == "gp_cities") && this.sample_params["calc_type_quotas"])
-			|| ((this.sample_params["calc_type"] == "gp" || this.sample_params["calc_type"] == "gp_cities") && this.sample_params["calc_type_age_split"]);
+		return (!this.is_gp_calc && this.sample_params["calc_type_quotas"]) || (this.is_gp_calc && this.sample_params["calc_type_age_split"]);
 	},
 	cluster_show: function() {
 		return this.sample_params["calc_type"] == "standard";
 	},
 	sample_size_show: function() {
-		return this.sample_params["calc_type"] != "gp" && this.sample_params["calc_type"] != "gp_cities";
+		return !this.is_gp_calc;
 	}
 };
 
@@ -328,17 +206,14 @@ app_config.computed = {
 app_config.methods = {
 	calc: function() {
 		t0 = performance.now();
-		// console.log(this.sample_params);
-		// console.log(JSON.stringify(this.sample_params));
-		// this.result.loading = true;
-		this.state = "loading";
+
 		let query = [...$$(".param-blocks").children].filter(a => a.style.display != "none").map(a => [a.querySelector(".param-name").textContent, a.querySelector(".param-string").textContent].join("\t")).join("\n");
 
 		const res = sample_calc(this.sample_params);
 
-		this.state = "ready";
 		this.query = query;
 		this.data = res;
+		this.state = "ready";
 	}
 };
 
@@ -348,3 +223,4 @@ app.mount("#app");
 
 
 // lc 581
+// lc 233
