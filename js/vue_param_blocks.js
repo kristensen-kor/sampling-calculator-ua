@@ -34,8 +34,8 @@ const p_calc_type_component = {
 			v_calc_type_age_split: this.vue_sample_params_copy["calc_type_age_split"],
 			items: {
 				online: "Выборка для Online/CATI",
-				standard: "Выборка для F2F",
 				cities: "Выборка по конкретным городам",
+				standard: "Выборка для F2F",
 				gp: "Статистика по генеральной совокупности",
 				gp_cities: "Статистика по городам",
 				calc_type_quotas: "Квотная",
@@ -88,18 +88,7 @@ const p_base_component = {
 	data: function() {
 		return {
 			options: [
-				{value: "2020w2_war", text: "2020 - Военная (2023-01)"},
-				{value: "2020w_war", text: "2020 - Военная (2022-09)"},
-				{value: "2020_standard", text: "2020 - Без переселенцев"},
-				{value: "2020_migration", text: "2020 - С переселенцами"},
-				{value: "2019_standard", text: "2019 - Без переселенцев"},
-				{value: "2019_migration", text: "2019 - С переселенцами"},
-				{value: "2018_standard", text: "2018 - Без переселенцев"},
-				{value: "2018_migration", text: "2018 - С переселенцами"},
-				{value: "2017_standard", text: "2017 - Без переселенцев"},
-				{value: "2017_migration", text: "2017 - С переселенцами"},
-				{value: "2016_standard", text: "2016 - Без переселенцев"},
-				{value: "2016_migration", text: "2016 - С переселенцами"}
+				{value: "2024v1", text: "2024-06 update"}
 			]
 		};
 	},
@@ -189,23 +178,6 @@ const p_oblasts_component = {
 	template: "#p_oblasts-component"
 };
 
-
-const p_ato_component = {
-	props: ["param_string", "vue_sample_params_copy"],
-	computed: {
-		v_ato: {
-			get: function() {
-				let value = this.vue_sample_params_copy["not_is_ato"];
-				this.$emit("update:param_string", value ? "Исключается" : "Включено");
-				return value;
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "not_is_ato": value});
-			}
-		}
-	},
-	template: "#p_ato-component"
-};
 
 
 const p_cities_component = {
@@ -708,7 +680,6 @@ const param_block = {
 		"p_calc_type-component": p_calc_type_component,
 		"p_base-component": p_base_component,
 		"p_oblasts-component": p_oblasts_component,
-		"p_ato-component": p_ato_component,
 		"p_cities-component": p_cities_component,
 		"p_types-component": p_types_component,
 		"p_population-component": p_population_component,
@@ -749,3 +720,5 @@ const param_block = {
 	},
 	template: "#param-block-component"
 };
+
+// lc 753
