@@ -1,7 +1,5 @@
 
 
-
-
 function sample_calc(sample_params) {
 	let p = {};
 
@@ -268,6 +266,45 @@ function sample_calc(sample_params) {
 		}
 	}
 
+	const strata_export = Object.values(strata);
+
+	// round
+	let quotas_to_round = [];
+	let rounded_quotas = [];
+
+	if (p.quota_type != "no" && sample_params["calc_type"] == "cities") quotas_to_round = local_main_db.map(a => a.sample_raw_quotas);
+	if (p.quota_type == "no" && sample_params["calc_type"] == "cities") quotas_to_round = local_main_db.map(a => [a.sample_raw]);
+	if (p.quota_type != "no" && sample_params["calc_type"] == "online") quotas_to_round = strata_export.map(a => a.quotas_sample);
+	if (p.quota_type == "no" && sample_params["calc_type"] == "online") quotas_to_round = strata_export.map(a => [a.sample]);
+	if (p.quota_type != "no" && sample_params["calc_type"] == "standard") quotas_to_round = [].concat(...strata_export.map(s => s.sample_clusters.map(a => a.real_quotas)));
+	if (p.quota_type == "no" && sample_params["calc_type"] == "standard") quotas_to_round = [].concat(...strata_export.map(s => s.sample_clusters.map(a => [a.sample_raw])));
+
+	if (p.quota_type != "no" && sample_params["calc_type"] == "gp_cities") rounded_quotas = local_main_db.map(a => a.gp_quotas.map(b => round(b)));
+	if (p.quota_type == "no" && sample_params["calc_type"] == "gp_cities") rounded_quotas = local_main_db.map(a => [round(a.gp)]);
+	if (p.quota_type != "no" && sample_params["calc_type"] == "gp") rounded_quotas = strata_export.map(a => a.quotas_gp.map(b => round(b)));
+	if (p.quota_type == "no" && sample_params["calc_type"] == "gp") rounded_quotas = strata_export.map(a => [round(a.gp)]);
+
+	function lr_round(xs) {
+		let base_array = xs.map(Math.floor);
+
+		const difference = round(sum(xs)) - sum(base_array);
+
+		const remainders = xs.map((num, index) => [num - Math.floor(num), index]).toSorted((a, b) => b[0] - a[0]);
+
+		for (let i = 0; i < difference; i++) {
+			base_array[remainders[i][1]]++;
+		}
+
+		return base_array;
+	}
+
+	function to_matrix(xs, rows) {
+		let cols = xs.length / rows;
+		return Array.from({ length: rows }, (_, i) => xs.slice(i * cols, (i + 1) * cols));
+	}
+
+	if (quotas_to_round.length > 0) rounded_quotas = to_matrix(lr_round(quotas_to_round.flat()), quotas_to_round.length);
+
 
 
 	let res = {};
@@ -275,6 +312,7 @@ function sample_calc(sample_params) {
 	res["calc_type"] = sample_params.calc_type;
 	res["quota_type"] = p.quota_type;
 	res["quotas_string"] = p.quotas_string;
+	res["rounded_quotas"] = rounded_quotas;
 
 	res["gp"] = gp_sum;
 
@@ -285,16 +323,16 @@ function sample_calc(sample_params) {
 
 	if (["gp", "online"].includes(sample_params.calc_type)) {
 		// res["cities_correspondence"] = strata.byValue.map!(s => s.clusters.filter!(c => c.type == "Місто").array).array.serializeToJson;
-		res["cities_correspondence"] = Object.values(strata);
+		res["cities_correspondence"] = strata_export;
 	}
 
 	if (["gp", "online", "standard"].includes(sample_params.calc_type)) {
 		// strata.byValue.each!((ref s) => {s.clusters = null;}());
-		res["strata"] = Object.values(strata);
+		res["strata"] = strata_export;
 	}
 
 	if (p.calc_type == "standard") {
-		res["count"] = sum(Object.values(strata).map(s => s.sample_clusters.length));
+		res["count"] = sum(strata_export.map(s => s.sample_clusters.length));
 	}
 
 	return res;
@@ -302,3 +340,5 @@ function sample_calc(sample_params) {
 }
 
 // lc 312
+
+

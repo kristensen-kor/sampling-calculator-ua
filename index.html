@@ -11,14 +11,15 @@
 	<link rel="stylesheet" href="css\global_style.css">
 	<link rel="stylesheet" href="css/style.css">
 
-	<script src="js\vue.global.js" defer></script>
+	<!-- <script src="js\vue.global.js" defer></script> -->
 	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" defer></script> -->
 	<script src="js\global_snippet.js" defer></script>
 	<!-- <script src="counter\counter.js" defer></script> -->
 	<script src="js\data.js" defer></script>
 	<script src="js\sample_calc.js" defer></script>
 	<script src="js\vue_param_blocks.js" defer></script>
-	<script src="js\vue_blocks.js" defer></script>
+	<!-- <script src="js\vue_blocks.js" defer></script> -->
+	<script type="module" src="js/main.js"></script>
 
 	<title>Sampling calculator UA</title>
 </head>
@@ -33,7 +34,7 @@
 	</header>
 
 
-	<div class="vue">
+	<div id="app">
 		<fieldset class="subwindow params-fs">
 			<legend>Параметры</legend>
 			<div class="params">
