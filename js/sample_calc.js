@@ -42,8 +42,10 @@ function sample_calc(sample_params) {
 	let local_main_db = convertToArrayOfObjects(db_main);
 	let local_age_db = convertToArrayOfObjects(db_age);
 
-	if (["standard", "online", "gp"].includes(sample_params["calc_type"])) {
-		local_main_db = local_main_db.filter(x => sample_params.oblasts.includes(x.oblast) && sample_params.types.includes(x.type));
+	if (p.is_cities_calc) {
+		local_main_db = local_main_db.filter(x => x.population >= 50000 && sample_params["cities"].includes(x.name));
+	} else {
+		local_main_db = local_main_db.filter(x => sample_params["oblasts"].includes(x.oblast) && sample_params["types"].includes(x.type));
 
 		if (sample_params["population more than"] != 0) {
 			const population_more = Number(sample_params["population more than"]) * 1000;
@@ -54,10 +56,6 @@ function sample_calc(sample_params) {
 			const population_less = Number(sample_params["population less than"]) * 1000;
 			local_main_db = local_main_db.filter(x => x.population <= population_less);
 		}
-	}
-
-	if (p.is_cities_calc) {
-		local_main_db = local_main_db.filter(x => x.population >= 50000 && sample_params.cities.includes(x.name));
 	}
 
 
@@ -250,7 +248,7 @@ function sample_calc(sample_params) {
 
 
 
-	// round
+	// rounding
 	let quotas_to_round = [];
 	let rounded_quotas = [];
 

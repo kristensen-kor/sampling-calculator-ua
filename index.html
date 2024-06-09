@@ -103,8 +103,8 @@
 
 <template id="p_oblasts-component">
 	<div>
-		<template v-for="oblast in oblasts" :key="oblast.id">
-			<label><input type="checkbox" :value="oblast" v-model="selected">{{ oblast }}</label>
+		<template v-for="oblast in oblasts">
+			<label><input type="checkbox" :value="oblast" v-model="selected" :disabled="unavailable.includes(oblast)">{{ oblast }}</label>
 		</template>
 
 		<button @click="select_all">Выбрать всё</button>
@@ -253,9 +253,6 @@
 <template id="result-block">
 	<fieldset class="subwindow">
 			<legend>Результат</legend>
-
-			<!-- <div v-show="state == 'loading'">Loading</div> -->
-			<!-- <div v-show="state == 'error'">Error</div> -->
 
 			<div v-if="state == 'ready'">
 
