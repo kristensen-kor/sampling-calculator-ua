@@ -1,3 +1,14 @@
+function convertToArrayOfObjects(db) {
+	let keys = Object.keys(db);
+	let result = [];
+
+	for (let i = 0; i < db[keys[0]].length; i++) {
+		result.push(Object.fromEntries(keys.map(key => [key, db[key][i]])));
+	}
+
+	return result;
+}
+
 function quotas_sort(xs) {
 	let ys = {};
 
@@ -15,12 +26,12 @@ function sample_calc(sample_params) {
 	p.is_cities_calc = ["cities", "gp_cities"].includes(sample_params["calc_type"]);
 	p.is_strata_calc = ["online", "gp"].includes(sample_params["calc_type"]);
 
-	p.quota_type = "no"
-	if (["standard", "online", "cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_quotas"]) p.quota_type = "full";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "full";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_gender_split"] && !sample_params["calc_type_age_split"]) p.quota_type = "gender";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && !sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "age";
 
+	p.quota_type = "no"
+	if (!p.is_gp_calc && sample_params["calc_type_quotas"]) p.quota_type = "full";
+	if (p.is_gp_calc && sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "full";
+	if (p.is_gp_calc && sample_params["calc_type_gender_split"] && !sample_params["calc_type_age_split"]) p.quota_type = "gender";
+	if (p.is_gp_calc && !sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "age";
 
 
 	p.quotas_string = [];
@@ -28,8 +39,8 @@ function sample_calc(sample_params) {
 	if (["age", "no"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age intervals"]));
 
 
-	let local_main_db = structuredClone(db_main2);
-	let local_age_db = structuredClone(db_age2);
+	let local_main_db = convertToArrayOfObjects(db_main);
+	let local_age_db = convertToArrayOfObjects(db_age);
 
 	if (["standard", "online", "gp"].includes(sample_params["calc_type"])) {
 		local_main_db = local_main_db.filter(x => sample_params.oblasts.includes(x.oblast) && sample_params.types.includes(x.type));
@@ -45,7 +56,7 @@ function sample_calc(sample_params) {
 		}
 	}
 
-	if (["cities", "gp_cities"].includes(sample_params["calc_type"])) {
+	if (p.is_cities_calc) {
 		local_main_db = local_main_db.filter(x => x.population >= 50000 && sample_params.cities.includes(x.name));
 	}
 
