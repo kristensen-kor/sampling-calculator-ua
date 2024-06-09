@@ -155,7 +155,7 @@ const p_oblasts_component = {
 
 				const excluded = this.oblasts.filter(a => !value.includes(a));
 
-				if (excluded.length <= 3) {
+				if (excluded.length <= 4) {
 					ps = "Все";
 					if (excluded.length > 0) {
 						ps += ", кроме " + excluded.join(", ");
@@ -173,7 +173,7 @@ const p_oblasts_component = {
 	},
 	methods: {
 		select_all: function() {
-			this.selected = this.oblasts.slice(1);
+			this.selected = this.oblasts.filter(x => !this.unavailable.includes(x));
 		},
 		clear_selection: function() {
 			this.selected = [];
