@@ -261,7 +261,7 @@
 
 				<button class="copy-buttons button-export" @click="copy('table')">Скопировать таблицу в буфер обмена</button>
 				<br>
-				<button class="copy-buttons button-export-cities" v-show="cities_correspondence != ''" @click="copy('cities_correspondence')">Скопировать соответствие городов стратам в буфер обмена</button>
+				<button class="copy-buttons button-export-cities" v-show="data.cities_correspondence != ''" @click="copy('cities_correspondence')">Скопировать соответствие городов стратам в буфер обмена</button>
 				<br>
 
 				<textarea class="hidden-textarea"></textarea>

@@ -22,17 +22,6 @@ const result_block = {
 				clusters: (this.data.calc_type == "online" || this.data.calc_type == "gp") ? 0 : this.display_table.length
 			};
 		},
-		cities_correspondence: function() {
-			if (this.data.calc_type == "online" || this.data.calc_type == "gp") {
-				const header = ["name", "rayon", "oblast", "type", "population", "stratum region", "stratum type"].join("\t") + "\n";
-				return header + this.data.cities_correspondence.filter(s => s.clusters.length > 0).map(
-					s => s.clusters.map(
-						c => [c.name, c.rayon, c.oblast, c.type, c.population, c.stratum_region, c.stratum_type].join("\t")
-					).join("\n")
-				).join("\n");
-			}
-			return "";
-		},
 		result_text: function() {
 			let text = "";
 			text += this.query + "\n";
@@ -61,7 +50,7 @@ const result_block = {
 			});
 		},
 		copy: function(x) {
-			if (x == "cities_correspondence") copy_to_clipboard(this.cities_correspondence);
+			if (x == "cities_correspondence") copy_to_clipboard(this.data.cities_correspondence);
 			if (x == "table") copy_to_clipboard(this.result_text);
 		}
 	},

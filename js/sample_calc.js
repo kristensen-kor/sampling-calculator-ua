@@ -300,8 +300,12 @@ function sample_calc(sample_params) {
 	if (p.is_gp_calc) res["gp"] = sum(rounded_quotas.map(sum));
 	if (!p.is_gp_calc) res["gp"] = round(gp_sum);
 
-	if (["gp", "online"].includes(sample_params.calc_type)) {
-		res["cities_correspondence"] = local_strata_db;
+	res["cities_correspondence"] = "";
+
+	if (p.is_strata_calc) {
+		const header = ["name", "rayon", "oblast", "type", "population", "stratum region", "stratum type"];
+		const data = local_strata_db.flatMap(stratum => stratum.clusters.map(c => [c.name, c.rayon, c.oblast, c.type, c.population, c.stratum_region, c.stratum_type]));
+		res["cities_correspondence"] = [header, ...data].map(row => row.join("\t")).join("\n");
 	}
 
 	return res;
