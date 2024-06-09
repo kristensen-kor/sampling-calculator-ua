@@ -182,6 +182,79 @@ const p_oblasts_component = {
 	template: "#p_oblasts-component"
 };
 
+const p_oblasts_component2 = {
+	props: ["param_string", "params_oblasts"],
+	data: function() {
+		return {
+			oblasts: [
+				"АР Крим",
+				"Вінницька",
+				"Волинська",
+				"Дніпропетровська",
+				"Донецька",
+				"Житомирська",
+				"Закарпатська",
+				"Запорізька",
+				"Івано-Франківська",
+				"Київ",
+				"Київська",
+				"Кіровоградська",
+				"Луганська",
+				"Львівська",
+				"Миколаївська",
+				"Одеська",
+				"Полтавська",
+				"Рівненська",
+				"Сумська",
+				"Тернопільська",
+				"Харківська",
+				"Херсонська",
+				"Хмельницька",
+				"Черкаська",
+				"Чернівецька",
+				"Чернігівська"
+			],
+			unavailable: [
+				"АР Крим",
+				"Луганська"
+			]
+		};
+	},
+	computed: {
+		selected: {
+			get: function() {
+				const value = this.params_oblasts;
+
+				let ps =  value.join(", ");
+
+				const excluded = this.oblasts.filter(a => !value.includes(a));
+
+				if (excluded.length <= 4) {
+					ps = "Все";
+					if (excluded.length > 0) {
+						ps += ", кроме " + excluded.join(", ");
+					}
+				}
+
+				this.$emit("update:param_string", ps);
+
+				return value;
+			},
+			set: function(value) {
+				this.$emit("update:params_oblasts", value);
+			}
+		}
+	},
+	methods: {
+		select_all: function() {
+			this.selected = this.oblasts.filter(x => !this.unavailable.includes(x));
+		},
+		clear_selection: function() {
+			this.selected = [];
+		}
+	},
+	template: "#p_oblasts-component"
+};
 
 
 const p_cities_component = {
@@ -723,6 +796,26 @@ const param_block = {
 		}
 	},
 	template: "#param-block-component"
+};
+
+const param_block2 = {
+	props: ["name_text", "param_string"],
+	data: function() {
+		return {
+			is_opened: false
+		};
+	},
+	computed: {
+		arrow: function() {
+			return this.is_opened ? "▽" : "▷";
+		}
+	},
+	methods: {
+		controls_switch: function() {
+			this.is_opened = !this.is_opened;
+		}
+	},
+	template: "#param-block2-component"
 };
 
 // lc 753

@@ -42,7 +42,10 @@
 				<div class="param-blocks">
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_calc_type-component" name_text="Тип расчёта"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_base-component" name_text="База"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_oblasts-component" name_text="Области" v-show="!cities_show"></param-block>
+					<param-block2 name_text="Области" v-show="!cities_show" :param_string="param_strings.oblasts">
+						<p_oblasts_component2 v-model:params_oblasts="sample_params.oblasts" v-model:param_string="param_strings.oblasts"></p_oblasts_component2>
+					</param-block2>
+					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_oblasts-component" name_text="Области" v-show="!cities_show"></param-block> -->
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
@@ -66,6 +69,17 @@
 </body>
 </html>
 
+
+<template id="param-block2-component">
+	<div class="param-block p_base_vue" :class="{ 'block-opened': is_opened }">
+		<div class="param-header" @click="controls_switch">
+			<div class="param-name">{{ name_text }}</div><div class="param-string">{{ param_string }}</div><div class="param-arrow">{{ arrow }}</div>
+		</div>
+		<div class="param-controls" v-show="is_opened">
+			<slot></slot>
+		</div>
+	</div>
+</template>
 
 <template id="param-block-component">
 	<div class="param-block p_base_vue" v-bind:class="{ 'block-opened': is_opened }">

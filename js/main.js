@@ -68,6 +68,7 @@ let app_config = {};
 app_config.data = function() {
 	return {
 		sample_params: default_sample_params,
+		param_strings: {},
 		state: "off",
 		query: {},
 		data: {}
@@ -76,6 +77,8 @@ app_config.data = function() {
 
 app_config.components = {
 	"param-block": param_block,
+	"param-block2": param_block2,
+	"p_oblasts_component2": p_oblasts_component2,
 	"result-block": result_block
 };
 
