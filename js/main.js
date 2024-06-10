@@ -78,7 +78,9 @@ app_config.data = function() {
 app_config.components = {
 	"param-block": param_block,
 	"param-block2": param_block2,
-	"p_oblasts_component2": p_oblasts_component2,
+	"p_calc_type-component": p_calc_type_component,
+	"p_base-component": p_base_component,
+	"p_oblasts_component": p_oblasts_component,
 	"result-block": result_block
 };
 

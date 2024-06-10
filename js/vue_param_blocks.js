@@ -1,37 +1,28 @@
+// function param_string_change3() {
+// 	this.$emit("update:param_string", this.param_string_local);
+// }
 
+// function update_param(param_name) {
+// 	return function(value) {
+// 		this.$emit(`update:${param_name}`, value);
+// 	}
+// }
 
-function param_string_change3() {
-	this.$emit("update:param_string", this.param_string_local);
+function bind_value(param_name) {
+	return {
+		get() {
+			return this[param_name];
+		},
+		set(value) {
+			this.$emit(`update:${param_name}`, value);
+		}
+	};
 }
-
-function param_string_change5(self) {
-	(self ? self : this).$emit("update:param_string", (self ? self : this).param_string_local);
-}
-
-function update_param(param_name) {
-	return function(value) {
-		console.log(this, param_name, value);
-		this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, param_name: value});
-	}
-}
-
-function update_param_simple(self, param_name, value) {
-	console.log(self, param_name, value);
-	self.$emit("update:vue_sample_params_copy", {...self.vue_sample_params_copy, param_name: value});
-}
-
-const param_string_change2 = () => {this.$emit("update:param_string", this.param_string_local);};
-const param_string_change4 = self => {self.$emit("update:param_string", self.param_string_local);};
-
 
 const p_calc_type_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "calc_type", "calc_type_quotas", "calc_type_gender_split", "calc_type_age_split"],
 	data: function() {
 		return {
-			v_calc_type: this.vue_sample_params_copy["calc_type"],
-			v_calc_type_quotas: this.vue_sample_params_copy["calc_type_quotas"],
-			v_calc_type_gender_split: this.vue_sample_params_copy["calc_type_gender_split"],
-			v_calc_type_age_split: this.vue_sample_params_copy["calc_type_age_split"],
 			items: {
 				online: "Выборка для Online/CATI",
 				cities: "Выборка по конкретным городам",
@@ -45,6 +36,10 @@ const p_calc_type_component = {
 		};
 	},
 	computed: {
+		v_calc_type: bind_value("calc_type"),
+		v_calc_type_quotas: bind_value("calc_type_quotas"),
+		v_calc_type_gender_split: bind_value("calc_type_gender_split"),
+		v_calc_type_age_split: bind_value("calc_type_age_split"),
 		show_quotas_options_checkbox: function() {
 			return (["gp", "gp_cities"].includes(this.v_calc_type)) ? false : true;
 		},
@@ -62,29 +57,18 @@ const p_calc_type_component = {
 		}
 	},
 	watch: {
-		v_calc_type: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type": value});
-		},
-		v_calc_type_quotas: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_quotas": value});
-		},
-		v_calc_type_gender_split: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_gender_split": value});
-		},
-		v_calc_type_age_split: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_age_split": value});
-		},
 		param_string_local: function() {
-			param_string_change4(this);
+			this.$emit("update:param_string", this.param_string_local);
 		}
 	},
-	mounted: param_string_change3,
+	mounted: function() {
+		this.$emit("update:param_string", this.param_string_local);
+	},
 	template: "#p_calc_type-component"
 };
 
-
 const p_base_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			options: [
@@ -95,21 +79,26 @@ const p_base_component = {
 	computed: {
 		v_base: {
 			get: function() {
-				let value = this.vue_sample_params_copy["base"];
+				let value = this.param;
 				this.$emit("update:param_string", this.options.filter(a => a.value == value)[0].text);
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "base": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	template: "#p_base-component"
+	template: `
+		<div>
+			<label v-for="option in options">
+				<input type="radio" v-model="v_base" name="f_base" :value="option.value">{{ option.text }}
+			</label>
+		</div>`
 };
 
 
 const p_oblasts_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			oblasts: [
@@ -149,7 +138,7 @@ const p_oblasts_component = {
 	computed: {
 		selected: {
 			get: function() {
-				const value = this.vue_sample_params_copy["oblasts"];
+				const value = this.param;
 
 				let ps =  value.join(", ");
 
@@ -167,81 +156,7 @@ const p_oblasts_component = {
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "oblasts": value});
-			}
-		}
-	},
-	methods: {
-		select_all: function() {
-			this.selected = this.oblasts.filter(x => !this.unavailable.includes(x));
-		},
-		clear_selection: function() {
-			this.selected = [];
-		}
-	},
-	template: "#p_oblasts-component"
-};
-
-const p_oblasts_component2 = {
-	props: ["param_string", "params_oblasts"],
-	data: function() {
-		return {
-			oblasts: [
-				"АР Крим",
-				"Вінницька",
-				"Волинська",
-				"Дніпропетровська",
-				"Донецька",
-				"Житомирська",
-				"Закарпатська",
-				"Запорізька",
-				"Івано-Франківська",
-				"Київ",
-				"Київська",
-				"Кіровоградська",
-				"Луганська",
-				"Львівська",
-				"Миколаївська",
-				"Одеська",
-				"Полтавська",
-				"Рівненська",
-				"Сумська",
-				"Тернопільська",
-				"Харківська",
-				"Херсонська",
-				"Хмельницька",
-				"Черкаська",
-				"Чернівецька",
-				"Чернігівська"
-			],
-			unavailable: [
-				"АР Крим",
-				"Луганська"
-			]
-		};
-	},
-	computed: {
-		selected: {
-			get: function() {
-				const value = this.params_oblasts;
-
-				let ps =  value.join(", ");
-
-				const excluded = this.oblasts.filter(a => !value.includes(a));
-
-				if (excluded.length <= 4) {
-					ps = "Все";
-					if (excluded.length > 0) {
-						ps += ", кроме " + excluded.join(", ");
-					}
-				}
-
-				this.$emit("update:param_string", ps);
-
-				return value;
-			},
-			set: function(value) {
-				this.$emit("update:params_oblasts", value);
+				this.$emit("update:param", value);
 			}
 		}
 	},
@@ -754,9 +669,9 @@ const p_cluster_size_component = {
 const param_block = {
 	props: ["selected_component", "name_text", "vue_sample_params_copy"],
 	components: {
-		"p_calc_type-component": p_calc_type_component,
-		"p_base-component": p_base_component,
-		"p_oblasts-component": p_oblasts_component,
+		// "p_calc_type-component": p_calc_type_component,
+		// "p_base-component": p_base_component,
+		// "p_oblasts-component": p_oblasts_component,
 		"p_cities-component": p_cities_component,
 		"p_types-component": p_types_component,
 		"p_population-component": p_population_component,

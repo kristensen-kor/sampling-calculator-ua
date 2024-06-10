@@ -14,13 +14,10 @@
 	<link rel="stylesheet" href="css/style.css">
 
 	<!-- <script src="js\vue.global.js" defer></script> -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" defer></script> -->
 	<script src="js\global_snippet.js" defer></script>
-	<!-- <script src="counter\counter.js" defer></script> -->
 	<script src="js\data.js" defer></script>
 	<script src="js\sample_calc.js" defer></script>
 	<script src="js\vue_param_blocks.js" defer></script>
-	<!-- <script src="js\vue_blocks.js" defer></script> -->
 	<script type="module" src="js/main.js"></script>
 
 </head>
@@ -33,19 +30,28 @@
 		</h1>
 	</header>
 
-
-
 	<div id="app">
 		<fieldset class="subwindow params-fs">
 			<legend>Параметры</legend>
 			<div class="params">
 				<div class="param-blocks">
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_calc_type-component" name_text="Тип расчёта"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_base-component" name_text="База"></param-block>
-					<param-block2 name_text="Области" v-show="!cities_show" :param_string="param_strings.oblasts">
-						<p_oblasts_component2 v-model:params_oblasts="sample_params.oblasts" v-model:param_string="param_strings.oblasts"></p_oblasts_component2>
+					<param-block2 name_text="Тип расчёта" :param_string="param_strings.calc_type">
+						<p_calc_type-component v-model:param_string="param_strings.calc_type"
+							v-model:calc_type="sample_params.calc_type"
+							v-model:calc_type_quotas="sample_params.calc_type_quotas"
+							v-model:calc_type_gender_split="sample_params.calc_type_gender_split"
+							v-model:calc_type_age_split="sample_params.calc_type_age_split"
+						></p_calc_type-component>
 					</param-block2>
-					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_oblasts-component" name_text="Области" v-show="!cities_show"></param-block> -->
+
+					<param-block2 name_text="База" :param_string="param_strings.base">
+						<p_base-component v-model:param_string="param_strings.base" v-model:param="sample_params.base" ></p_base-component>
+					</param-block2>
+
+					<param-block2 name_text="Области" :param_string="param_strings.oblasts" v-show="!cities_show">
+						<p_oblasts_component v-model:param_string="param_strings.oblasts" v-model:param="sample_params.oblasts"></p_oblasts_component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
@@ -104,14 +110,6 @@
 		<label v-show="show_quotas_options_checkbox"><input type="checkbox" v-model="v_calc_type_quotas">{{ items.calc_type_quotas }}</label>
 		<label v-show="show_gp_options_checkbox"><input type="checkbox" v-model="v_calc_type_gender_split">{{ items.calc_type_gender_split }}</label>
 		<label v-show="show_gp_options_checkbox"><input type="checkbox" v-model="v_calc_type_age_split">{{ items.calc_type_age_split }}</label>
-	</div>
-</template>
-
-<template id="p_base-component">
-	<div>
-		<template v-for="option in options" :key="option.id">
-			<label><input type="radio" v-model="v_base" name="f_base" :value="option.value">{{ option.text }}</label>
-		</template>
 	</div>
 </template>
 
