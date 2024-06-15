@@ -186,7 +186,12 @@ const p_types_component = {
 			}
 		}
 	},
-	template: "#p_types-component"
+	template: `
+		<div>
+			<label><input type="checkbox" v-model="selected" value="Місто">Город</label>
+			<label><input type="checkbox" v-model="selected" value="СМТ">ПГТ</label>
+			<label><input type="checkbox" v-model="selected" value="Село" disabled>Село</label>
+		</div>`
 };
 
 

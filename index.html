@@ -57,7 +57,6 @@
 						<p_types-component v-model:param_string="param_strings.types" v-model:param="sample_params.types"></p_types-component>
 					</param-block2>
 
-					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block> -->
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
@@ -146,14 +145,6 @@
 			</tbody>
 		</table>
 		<button @click="clear_selection">Снять выделение</button>
-	</div>
-</template>
-
-<template id="p_types-component">
-	<div>
-		<label><input type="checkbox" v-model="selected" value="Місто">Город</label>
-		<label><input type="checkbox" v-model="selected" value="СМТ">ПГТ</label>
-		<label><input type="checkbox" v-model="selected" value="Село" disabled>Село</label>
 	</div>
 </template>
 
