@@ -60,10 +60,19 @@
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_type-component" name_text="Стратификация по типу" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_gender-component" name_text="Пол"></param-block>
+
+					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_gender-component" name_text="Пол"></param-block> -->
+					<param-block2 name_text="Пол" :param_string="param_strings.gender">
+						<p_gender-component v-model:param_string="param_strings.gender" v-model:param="sample_params.gender" ></p_gender-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age-component" name_text="Возраст"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_sample_size-component" name_text="Размер" v-show="sample_size_show"></param-block>
+
+					<param-block2 name_text="Размер" :param_string="param_strings['sample size']" v-show="sample_size_show">
+						<p_sample_size-component v-model:param_string="param_strings['sample size']" v-model:param="sample_params['sample size']"></p_sample_size-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cluster_size-component" name_text="Нагрузка на точку" v-show="cluster_show"></param-block>
 				</div>
 			</div>
@@ -200,14 +209,6 @@
 </template>
 
 
-<template id="p_gender-component">
-	<div>
-		<label><input type="checkbox" v-model="selected" value="m">Мужчины</label>
-		<label><input type="checkbox" v-model="selected" value="f">Женщины</label>
-	</div>
-</template>
-
-
 <template id="p_age-component">
 	<div>
 		<div class="table collapse">
@@ -243,11 +244,6 @@
 	</div>
 </template>
 
-<template id="p_sample_size-component">
-	<div>
-		<input type="number" id="f_ssize" min="0" v-model.number="value" @wheel.prevent="wheel_value">
-	</div>
-</template>
 
 <template id="p_cluster_size-component">
 	<div>

@@ -479,29 +479,31 @@ const p_strata_type_component = {
 
 
 const p_gender_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		selected: {
 			get: function() {
-				let value = this.vue_sample_params_copy["gender"];
+				const value = this.param;
 
-				let ps = "";
-				if (value.length == 2) {
-					ps = "Все";
-				} else {
-					if (value[0] == "m") ps = "Мужчины";
-					if (value[0] == "f") ps = "Женщины";
-				}
+				let ps = "Все";
+				if (value.length == 1 && value.includes("m")) ps = "Мужчины";
+				if (value.length == 1 && value.includes("f")) ps = "Женщины";
+
 				this.$emit("update:param_string", ps);
 
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "gender": value});
+				if (value.length == 0) value = this.param.includes("m") ? ["f"] : ["m"];
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	template: "#p_gender-component"
+	template: `
+		<div>
+			<label><input type="checkbox" v-model="selected" value="m">Мужчины</label>
+			<label><input type="checkbox" v-model="selected" value="f">Женщины</label>
+		</div>`
 }
 
 
@@ -621,28 +623,23 @@ const p_age_intervals_component = {
 
 
 const p_sample_size_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		value: {
 			get: function() {
-				const value = this.vue_sample_params_copy["sample size"];
-
+				const value = this.param;
 				this.$emit("update:param_string", value);
-
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "sample size": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	methods: {
-		wheel_value: function(e) {
-			if (e.deltaY < 0) this.value++;
-			if (e.deltaY > 0 && this.value > 1) this.value--;
-		}
-	},
-	template: "#p_sample_size-component"
+	template: `
+		<div>
+			<input type="number" id="f_ssize" min="0" v-model.number="value" @wheel="">
+		</div>`
 }
 
 
@@ -683,10 +680,10 @@ const param_block = {
 		"p_population-component": p_population_component,
 		"p_strata_region-component": p_strata_region_component,
 		"p_strata_type-component": p_strata_type_component,
-		"p_gender-component": p_gender_component,
+		// "p_gender-component": p_gender_component,
 		"p_age-component": p_age_component,
 		"p_age_intervals-component": p_age_intervals_component,
-		"p_sample_size-component": p_sample_size_component,
+		// "p_sample_size-component": p_sample_size_component,
 		"p_cluster_size-component": p_cluster_size_component
 	},
 	data: function() {
