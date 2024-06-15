@@ -82,6 +82,7 @@ app_config.components = {
 	"p_base-component": p_base_component,
 	"p_oblasts_component": p_oblasts_component,
 	"p_types-component": p_types_component,
+	"p_cities-component": p_cities_component,
 	"p_gender-component": p_gender_component,
 	"p_sample_size-component": p_sample_size_component,
 	"result-block": result_block

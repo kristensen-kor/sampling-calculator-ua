@@ -1,3 +1,4 @@
+
 .subwindow {
 	display: inline-block;
 	float: left;
@@ -35,9 +36,11 @@
 
 
 .param-header {
+	cursor: default;
 	display: table;
 	width: 100%;
 	padding: 2px;
+	max-width: 40vw;
 }
 
 .param-arrow {

@@ -196,68 +196,64 @@ const p_types_component = {
 
 
 const p_cities_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
-			cities_data: [
-				"city_01\tКиїв\tКиїв*\tКиїв\t2769559\ttrue",
-				"city_02\tХарків\tХарків*\tХарківська\t1333160\ttrue",
-				"city_03\tОдеса\tОдеса*\tОдеська\t947987\ttrue",
-				"city_04\tДніпро\tДніпро*\tДніпропетровська\t908554\ttrue",
-				"city_05\tДонецьк\tДонецьк*\tДонецька\tNA\tfalse",
-				"city_06\tЗапоріжжя\tЗапоріжжя*\tЗапорізька\t666101\tfalse",
-				"city_07\tЛьвів\tЛьвів*\tЛьвівська\t672875\ttrue",
-				"city_08\tКривий Ріг\tКривий Ріг\tДніпропетровська\t566523\tfalse",
-				"city_09\tМиколаїв\tМиколаїв*\tМиколаївська\t440918\tfalse",
-				"city_10\tМаріуполь\tМаріуполь\tДонецька\tNA\tfalse",
-				"city_11\tЛуганськ\tЛуганськ*\tЛуганська\tNA\tfalse",
-				"city_12\tВінниця\tВінниця*\tВінницька\t346853\tfalse",
-				"city_13\tМакіївка\tМакіївка\tДонецька\tNA\tfalse",
-				"city_14\tСевастополь\tСевастополь\tАР Крим\tNA\tfalse",
-				"city_15\tСімферополь\tСімферополь*\tАР Крим\tNA\tfalse",
-				"city_16\tХерсон\tХерсон*\tХерсонська\t66991\tfalse",
-				"city_18\tЧернігів\tЧернігів*\tЧернігівська\t265246\tfalse",
-				"city_17\tПолтава\tПолтава*\tПолтавська\t262287\tfalse",
-				"city_19\tЧеркаси\tЧеркаси*\tЧеркаська\t253134\tfalse",
-				"city_22\tХмельницький\tХмельницький*\tХмельницька\t257464\tfalse",
-				"city_21\tСуми\tСуми*\tСумська\t240599\tfalse",
-				"city_20\tЖитомир\tЖитомир*\tЖитомирська\t245430\tfalse",
-				"city_23\tЧернівці\tЧернівці*\tЧернівецька\t247938\tfalse",
-				"city_24\tГорлівка\tГорлівка\tДонецька\tNA\tfalse",
-				"city_25\tРівне\tРівне*\tРівненська\t228778\tfalse",
-				"city_26\tКам'янське\tКам'янське\tДніпропетровська\t212804\tfalse",
-				"city_27\tКропивницький\tКропивницький*\tКіровоградська\t206078\tfalse",
-				"city_28\tІвано-Франківськ\tІвано-Франківськ*\tІвано-Франківська\t223452\tfalse",
-				"city_29\tКременчук\tКременчук\tПолтавська\t201946\tfalse",
-				"city_30\tТернопіль\tТернопіль*\tТернопільська\t211077\tfalse",
-				"city_31\tЛуцьк\tЛуцьк*\tВолинська\t202617\tfalse",
-				"city_32\tБіла Церква\tБіла Церква\tКиївська\t194443\tfalse",
-				"city_33\tКраматорськ\tКраматорськ\tДонецька\t35315\tfalse",
-				"city_34\tМелітополь\tМелітополь\tЗапорізька\tNA\tfalse",
-				"city_35\tКерч\tКерч\tАР Крим\tNA\tfalse",
-				"city_36\tУжгород\tУжгород*\tЗакарпатська\t108303\tfalse"
-			]
+			cities : []
 		};
 	},
 	computed: {
-		cities: function() {
-			return this.cities_data.map(a => a.split("\t"));
-		},
 		selected_cities: {
 			get: function() {
-				let value = this.vue_sample_params_copy["cities"];
+				let value = this.param;
 				this.$emit("update:param_string", value.join(", "));
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "cities": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
 	methods: {
 		clear_selection: function() {
 			this.selected_cities = [];
+		},
+		select_centers: function() {
+			this.selected_cities = this.cities.filter(a => a[4] == "✓").map(a => a[1]);
 		}
+	},
+	mounted: function () {
+		const cities_data = [
+			"city_01\tКиїв\tКиїв\t2769559\t✓",
+			"city_02\tХарків\tХарківська\t1333160\t✓",
+			"city_03\tОдеса\tОдеська\t947987\t✓",
+			"city_04\tДніпро\tДніпропетровська\t908554\t✓",
+			"city_07\tЛьвів\tЛьвівська\t672875\t✓",
+			"city_06\tЗапоріжжя\tЗапорізька\t666101\t✓",
+			"city_08\tКривий Ріг\tДніпропетровська\t566523\t",
+			"city_09\tМиколаїв\tМиколаївська\t440918\t✓",
+			"city_12\tВінниця\tВінницька\t346853\t✓",
+			"city_18\tЧернігів\tЧернігівська\t265246\t✓",
+			"city_17\tПолтава\tПолтавська\t262287\t✓",
+			"city_22\tХмельницький\tХмельницька\t257464\t✓",
+			"city_19\tЧеркаси\tЧеркаська\t253134\t✓",
+			"city_23\tЧернівці\tЧернівецька\t247938\t✓",
+			"city_20\tЖитомир\tЖитомирська\t245430\t✓",
+			"city_21\tСуми\tСумська\t240599\t✓",
+			"city_25\tРівне\tРівненська\t228778\t✓",
+			"city_28\tІвано-Франківськ\tІвано-Франківська\t223452\t✓",
+			"city_26\tКам'янське\tДніпропетровська\t212804\t",
+			"city_30\tТернопіль\tТернопільська\t211077\t✓",
+			"city_27\tКропивницький\tКіровоградська\t206078\t✓",
+			"city_31\tЛуцьк\tВолинська\t202617\t✓",
+			"city_29\tКременчук\tПолтавська\t201946\t",
+			"city_32\tБіла Церква\tКиївська\t194443\t",
+			"city_36\tУжгород\tЗакарпатська\t108303\t✓",
+			"city_16\tХерсон\tХерсонська\t66991\t✓",
+			"city_33\tКраматорськ\tДонецька\t35315\t"
+		]
+
+		this.cities = cities_data.map(a => a.split("\t"));
 	},
 	template: "#p_cities-component"
 };
@@ -675,7 +671,7 @@ const param_block = {
 		// "p_calc_type-component": p_calc_type_component,
 		// "p_base-component": p_base_component,
 		// "p_oblasts-component": p_oblasts_component,
-		"p_cities-component": p_cities_component,
+		// "p_cities-component": p_cities_component,
 		// "p_types-component": p_types_component,
 		"p_population-component": p_population_component,
 		"p_strata_region-component": p_strata_region_component,

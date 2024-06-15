@@ -56,12 +56,14 @@
 						<p_types-component v-model:param_string="param_strings.types" v-model:param="sample_params.types"></p_types-component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
+					<param-block2 name_text="Города" :param_string="param_strings.cities" v-show="cities_show">
+						<p_cities-component v-model:param_string="param_strings.cities" v-model:param="sample_params.cities"></p_cities-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_type-component" name_text="Стратификация по типу" v-show="!cities_show"></param-block>
 
-					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_gender-component" name_text="Пол"></param-block> -->
 					<param-block2 name_text="Пол" :param_string="param_strings.gender">
 						<p_gender-component v-model:param_string="param_strings.gender" v-model:param="sample_params.gender" ></p_gender-component>
 					</param-block2>
@@ -140,19 +142,21 @@
 		<table>
 			<thead>
 				<tr>
-					<th></th><th>Город</th><th>Область</th><th>Население</th>
+					<th></th><th>Город</th><th>Область</th><th>Население</th><th>Обл. центр</th>
 				</tr>
 			</thead>
 			<tbody class="f_cities">
 				<tr v-for="city of cities" :key="city.id">
-					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]" :disabled="city[4] == 'NA'"></td>
+					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]"></td>
+					<td><label :for="city[0]">{{ city[1] }}</label></td>
 					<td><label :for="city[0]">{{ city[2] }}</label></td>
-					<td><label :for="city[0]">{{ city[3] }}</label></td>
-					<td class="text_right"><label :for="city[0]">{{ city[4] }}</label></td>
+					<td class="text_right"><label :for="city[0]">{{ city[3] }}</label></td>
+					<td style="text-align: center;"><label :for="city[0]">{{ city[4] }}</label></td>
 				</tr>
 			</tbody>
 		</table>
 		<button @click="clear_selection">Снять выделение</button>
+		<button @click="select_centers">Выбрать областные центры</button>
 	</div>
 </template>
 
