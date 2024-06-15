@@ -719,11 +719,6 @@ const param_block2 = {
 			is_opened: false
 		};
 	},
-	computed: {
-		arrow: function() {
-			return this.is_opened ? "▽" : "▷";
-		}
-	},
 	methods: {
 		controls_switch: function() {
 			this.is_opened = !this.is_opened;

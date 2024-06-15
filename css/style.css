@@ -20,10 +20,8 @@
 
 .param-block {
 	width: 100%;
-	/*border: 1px dotted #657b83;*/
-	border-color: #fdf6e3;
-
-	/* background: #F3EDDA; */
+	background-color: #e3e1df;
+	border-radius: 6px;
 }
 
 .param-block:not(:last-child) {
@@ -31,16 +29,17 @@
 }
 
 .block-opened {
-	border: 1px dotted #657b83;
+	background-color: #f6f5f4;
 }
 
-
 .param-header {
-	cursor: default;
+	cursor: pointer;
 	display: table;
 	width: 100%;
 	padding: 2px;
 	max-width: 40vw;
+	border-radius: 6px;
+	transition: background-color 0.2s;
 }
 
 .param-arrow {
@@ -67,21 +66,26 @@
 	padding: 2px;
 }
 
-.param-header:hover, .block-opened .param-header:hover {
-	background: #ddd8d3;
-/*	background: #DFDAC7;*/
-	/* background: #eee8d5; */
+.block-opened .param-header:hover {
+	background-color: #c1c0be;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.param-header:hover {
+	background-color: #c1c0be;
+	border-radius: 6px;
 }
 
 .block-opened .param-header {
-	background: #d3d8dd;
-/*	background: #eee8d5;*/
-	/* background: #F3EDDA; */
+	background-color: #d9d8d6;
+	border-radius: 6px;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+
 }
 
-.block-opened:hover {
-	border-color: #268bd2;
-}
+
 
 
 .status-text {

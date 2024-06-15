@@ -93,7 +93,7 @@
 <template id="param-block2-component">
 	<div class="param-block p_base_vue" :class="{ 'block-opened': is_opened }">
 		<div class="param-header" @click="controls_switch">
-			<div class="param-name">{{ name_text }}</div><div class="param-string">{{ param_string }}</div><div class="param-arrow">{{ arrow }}</div>
+			<div class="param-name">{{ name_text }}</div><div class="param-string">{{ param_string }}</div>
 		</div>
 		<div class="param-controls" v-show="is_opened">
 			<slot></slot>
