@@ -177,7 +177,7 @@ const p_types_component = {
 	computed: {
 		selected: {
 			get: function() {
-				let value = this.param;
+				const value = this.param;
 				this.$emit("update:param_string", value.length == 3 ? "Все" : value.join(", "));
 				return value;
 			},

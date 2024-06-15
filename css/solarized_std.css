@@ -327,46 +327,51 @@ summary {
 }
 
 body {
-  background: var(--base3);
-  color: var(--base00);
+/*  background: var(--base3);*/
+/*  color: var(--base00);*/
 }
 
 label {
-  color: var(--cyan);
+/*  color: var(--cyan);*/
+  color: #279AF1;
 }
 
 label:hover {
   color: var(--blue);
+/*  color: #bcbbcb;*/
 }
 
 hr {
   border-color: var(--base1);
 }
 
-button, input, textarea {
+/*button, input, textarea {*/
+input, textarea {
   color: var(--cyan);
-  background: var(--base3);
-  border-color: var(--cyan);
-  border-style: solid;
+/*  background: var(--base3);*/
+/*  border-color: var(--cyan);*/
+/*  border-style: solid;*/
 }
 
 button:focus, input:focus {
-  outline-color: var(--blue);
+/*  outline-color: var(--blue);*/
   color: var(--blue);
-  border-color: var(--blue);
+/*  border-color: var(--blue);*/
 }
 
-button:hover, input:hover {
+/*button:hover, input:hover {
   border-color: var(--blue);
   color: var(--blue);
-}
+}*/
 
 input[type="text"]:focus {
   color: var(--yellow);
+/*  color: #d16c26;*/
 }
 
 input[type="number"]:focus {
   color: var(--magenta);
+/*  color: #d1268b;*/
 }
 
 button:disabled {
