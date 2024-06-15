@@ -640,29 +640,25 @@ const p_sample_size_component = {
 
 
 const p_cluster_size_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		value: {
 			get: function() {
-				const value = this.vue_sample_params_copy["cluster size"];
-
+				const value = this.param;
 				this.$emit("update:param_string", value);
-
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "cluster size": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	methods: {
-		wheel_value: function(e) {
-			if (e.deltaY < 0) this.value++;
-			if (e.deltaY > 0 && this.value > 1) this.value--;
-		}
-	},
-	template: "#p_cluster_size-component"
+	template: `
+	<div>
+		<input type="number" id="f_csize" min="0" v-model.number="value" @wheel="">
+	</div>`
 }
+
 
 
 const param_block = {
@@ -678,9 +674,9 @@ const param_block = {
 		"p_strata_type-component": p_strata_type_component,
 		// "p_gender-component": p_gender_component,
 		"p_age-component": p_age_component,
-		"p_age_intervals-component": p_age_intervals_component,
+		"p_age_intervals-component": p_age_intervals_component
 		// "p_sample_size-component": p_sample_size_component,
-		"p_cluster_size-component": p_cluster_size_component
+		// "p_cluster_size-component": p_cluster_size_component
 	},
 	data: function() {
 		return {

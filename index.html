@@ -75,7 +75,9 @@
 						<p_sample_size-component v-model:param_string="param_strings['sample size']" v-model:param="sample_params['sample size']"></p_sample_size-component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cluster_size-component" name_text="Нагрузка на точку" v-show="cluster_show"></param-block>
+					<param-block2 name_text="Нагрузка на точку" :param_string="param_strings['cluster size']" v-show="cluster_show">
+						<p_cluster_size-component v-model:param_string="param_strings['cluster size']" v-model:param="sample_params['cluster size']"></p_cluster_size-component>
+					</param-block2>
 				</div>
 			</div>
 
@@ -245,13 +247,6 @@
 				</template>
 		</div>
 		<button class="f_age_groups_reset" @click="reset">Сброс</button>
-	</div>
-</template>
-
-
-<template id="p_cluster_size-component">
-	<div>
-		<input type="number" id="f_csize" min="0" v-model.number="value" @wheel.prevent="wheel_value">
 	</div>
 </template>
 
