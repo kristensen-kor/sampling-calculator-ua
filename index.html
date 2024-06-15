@@ -33,6 +33,7 @@
 	<div id="app">
 		<fieldset class="subwindow params-fs">
 			<legend>Параметры</legend>
+
 			<div class="params">
 				<div class="param-blocks">
 					<param-block2 name_text="Тип расчёта" :param_string="param_strings.calc_type">
@@ -52,7 +53,11 @@
 						<p_oblasts_component v-model:param_string="param_strings.oblasts" v-model:param="sample_params.oblasts"></p_oblasts_component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block>
+					<param-block2 name_text="Типы" :param_string="param_strings.types" v-show="!cities_show">
+						<p_types-component v-model:param_string="param_strings.types" v-model:param="sample_params.types"></p_types-component>
+					</param-block2>
+
+					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block> -->
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
@@ -94,7 +99,6 @@
 		</div>
 		<div class="param-controls" v-show="controls_visible">
 			<component :is="selected_component" v-model:param_string="param_string" v-model:vue_sample_params_copy="vue_sample_params_copy_2"></component>
-			<!-- <component :is="selected_component" :param_string.sync="param_string" :vue_sample_params_copy.sync="vue_sample_params_copy_2"></component> -->
 		</div>
 	</div>
 </template>

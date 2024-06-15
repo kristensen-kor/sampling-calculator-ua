@@ -81,6 +81,7 @@ app_config.components = {
 	"p_calc_type-component": p_calc_type_component,
 	"p_base-component": p_base_component,
 	"p_oblasts_component": p_oblasts_component,
+	"p_types-component": p_types_component,
 	"result-block": result_block
 };
 

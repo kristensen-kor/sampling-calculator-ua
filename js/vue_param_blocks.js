@@ -172,6 +172,24 @@ const p_oblasts_component = {
 };
 
 
+const p_types_component = {
+	props: ["param_string", "param"],
+	computed: {
+		selected: {
+			get: function() {
+				let value = this.param;
+				this.$emit("update:param_string", value.length == 3 ? "Все" : value.join(", "));
+				return value;
+			},
+			set: function(value) {
+				this.$emit("update:param", value);
+			}
+		}
+	},
+	template: "#p_types-component"
+};
+
+
 const p_cities_component = {
 	props: ["param_string", "vue_sample_params_copy"],
 	data: function() {
@@ -237,23 +255,6 @@ const p_cities_component = {
 		}
 	},
 	template: "#p_cities-component"
-};
-
-const p_types_component = {
-	props: ["param_string", "vue_sample_params_copy"],
-	computed: {
-		selected: {
-			get: function() {
-				let value = this.vue_sample_params_copy["types"];
-				this.$emit("update:param_string", value.length == 3 ? "Все" : value.join(", "));
-				return value;
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "types": value});
-			}
-		}
-	},
-	template: "#p_types-component"
 };
 
 
@@ -673,7 +674,7 @@ const param_block = {
 		// "p_base-component": p_base_component,
 		// "p_oblasts-component": p_oblasts_component,
 		"p_cities-component": p_cities_component,
-		"p_types-component": p_types_component,
+		// "p_types-component": p_types_component,
 		"p_population-component": p_population_component,
 		"p_strata_region-component": p_strata_region_component,
 		"p_strata_type-component": p_strata_type_component,
