@@ -323,17 +323,6 @@ div {
 	margin-top: 19px;
 }
 
-#f_ssize {
-	width: 8ch;
-}
-
-#f_csize {
-	width: 6ch;
-}
-
-div {
-	/*border: 1px solid red;*/
-}
 
 #input_sql_commands {
 	width: 700px;
