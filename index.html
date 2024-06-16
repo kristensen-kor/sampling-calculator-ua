@@ -8,7 +8,7 @@
 	<!-- <link rel="stylesheet" href="css\normalize5.css"> -->
 	<!-- <link rel="stylesheet" href="css\normalize8.css"> -->
 	<!-- <link rel="stylesheet" href="css\standard.css"> -->
-	<link rel="stylesheet" href="css\solarized_std.css">
+	<!-- <link rel="stylesheet" href="css\solarized_std.css"> -->
 	<!-- <link id="solarized_style" rel="stylesheet" href="css\solarized_light.css"> -->
 	<link rel="stylesheet" href="css\global_style.css">
 	<link rel="stylesheet" href="css/style.css">
@@ -30,8 +30,8 @@
 	</header>
 
 	<div id="app">
-		<fieldset class="subwindow params-fs">
-			<legend>Параметры</legend>
+		<div class="subwindow params-area">
+			<h2>Параметры</h2>
 
 			<div class="params">
 				<div class="param-blocks">
@@ -81,9 +81,8 @@
 				</div>
 			</div>
 
-			<hr>
 			<button class="button-calc" @click="calc">Посчитать</button>
-		</fieldset>
+		</div>
 
 		<result-block :state="state" :query="query" :data="data" v-show="state != 'off'"></result-block>
 	</div>
@@ -173,7 +172,7 @@
 		<label><input type="radio" name="f_population" v-model="selected" value="other">Другое</label>
 		<label><input type="number" class="f_population_custom" min="0" v-model.number="gt">K жителей и больше</label>
 		<label><input type="checkbox" v-model="lt_enabled">Ограничить сверху</label>
-		<label>Менее <input type="number" class="f_population_custom" :disabled="!lt_enabled" min="0" v-model="lt">K жителей</label>
+		<label :class="{'label_disabled': !lt_enabled}">Менее <input type="number" class="f_population_custom" :disabled="!lt_enabled" min="0" v-model="lt">K жителей</label>
 	</div>
 </template>
 
@@ -252,8 +251,8 @@
 
 
 <template id="result-block">
-	<fieldset class="subwindow">
-			<legend>Результат</legend>
+	<div class="subwindow">
+			<h2>Результат</h2>
 
 			<div v-if="state == 'ready'">
 
@@ -287,5 +286,5 @@
 					</tbody>
 				</table>
 			</div>
-	</fieldset>
+	</div>
 </template>

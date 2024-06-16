@@ -124,6 +124,10 @@ app_config.methods = {
 const app = createApp(app_config);
 app.mount("#app");
 
+// custom buttons styling hack?
+// document.addEventListener("click", function(event) {
+// 	if (event.target.tagName == "BUTTON") event.target.blur();
+// });
 
 // lc 581
 // lc 233
