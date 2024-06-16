@@ -111,5 +111,5 @@ export default {
 		55: "18-55"
 	},
 	"sample size": 400,
-	"cluster size": 12
+	"cluster_size": 12
 };

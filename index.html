@@ -75,8 +75,8 @@
 						<p_sample_size-component v-model:param_string="param_strings['sample size']" v-model:param="sample_params['sample size']"></p_sample_size-component>
 					</param-block2>
 
-					<param-block2 name_text="Нагрузка на точку" :param_string="param_strings['cluster size']" v-show="cluster_show">
-						<p_cluster_size-component v-model:param_string="param_strings['cluster size']" v-model:param="sample_params['cluster size']"></p_cluster_size-component>
+					<param-block2 name_text="Нагрузка на точку" :param_string="param_strings.cluster_size" v-show="cluster_show">
+						<p_cluster_size-component v-model:param_string="param_strings.cluster_size" v-model:param="sample_params.cluster_size"></p_cluster_size-component>
 					</param-block2>
 				</div>
 			</div>

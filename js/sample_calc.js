@@ -207,13 +207,13 @@ function sample_calc(sample_params) {
 		for (let stratum of local_strata_db) {
 			stratum.sample_clusters = [];
 
-			if (stratum.sample / stratum.cluster_count >= sample_params["cluster size"]) {
+			if (stratum.sample / stratum.cluster_count >= sample_params["cluster_size"]) {
 				stratum.sample_clusters = stratum.clusters;
 				for (cluster of stratum.sample_clusters) {
 					cluster.real_sample = cluster.gp / gp_sum * sample_params["sample size"];
 				}
 			} else {
-				const cnt = Math.max(1, round(stratum.sample / sample_params["cluster size"]));
+				const cnt = Math.max(1, round(stratum.sample / sample_params["cluster_size"]));
 				const sample = stratum.sample / cnt;
 
 				let index_map = [];
