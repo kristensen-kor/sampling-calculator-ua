@@ -68,7 +68,13 @@
 						<p_gender-component v-model:param_string="param_strings.gender" v-model:param="sample_params.gender" ></p_gender-component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age-component" name_text="Возраст"></param-block>
+					<param-block2 name_text="Возраст" :param_string="param_strings.age">
+						<p_age-component v-model:param_string="param_strings.age"
+							v-model:age_more_than="sample_params.age_more_than"
+							v-model:age_less_than="sample_params.age_less_than"
+						></p_age-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block>
 
 					<param-block2 name_text="Размер" :param_string="param_strings['sample size']" v-show="sample_size_show">

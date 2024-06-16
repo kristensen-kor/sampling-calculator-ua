@@ -69,7 +69,7 @@ function sample_calc(sample_params) {
 		total_sum[key] = sum(local_age_db.filter(x => x.key_join_age == key).map(x => x.cnt));
 	}
 
-	local_age_db = local_age_db.filter(x => sample_params["gender"].includes(x.gender) && x.age >= sample_params["age more than"] && x.age <= sample_params["age less than"])
+	local_age_db = local_age_db.filter(x => sample_params["gender"].includes(x.gender) && x.age >= sample_params["age_more_than"] && x.age <= sample_params["age_less_than"])
 
 	let frac = {};
 

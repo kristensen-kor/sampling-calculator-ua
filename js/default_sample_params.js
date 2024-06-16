@@ -67,8 +67,8 @@ export default {
 	"is_smt_split": false,
 	"split point names": ["500k+", "500k-50k", "50k-"],
 	"gender": ["m", "f"],
-	"age more than": 18,
-	"age less than": 55,
+	"age_more_than": 18,
+	"age_less_than": 55,
 	"age breakpoints": [],
 	"age intervals": {
 		18: "18-55",

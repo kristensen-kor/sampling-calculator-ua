@@ -504,7 +504,7 @@ const p_gender_component = {
 
 
 const p_age_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "age_more_than", "age_less_than"],
 	data: function() {
 		return {
 			gte: "",
@@ -531,7 +531,8 @@ const p_age_component = {
 		},
 		ps: function(value) {
 			this.$emit("update:param_string", value);
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "age more than": this.gte, "age less than": this.lte});
+			this.$emit("update:age_more_than", this.gte);
+			this.$emit("update:age_less_than", this.lte);
 		}
 	},
 	methods: {
@@ -545,8 +546,8 @@ const p_age_component = {
 		},
 	},
 	mounted: function() {
-		this.gte = this.vue_sample_params_copy["age more than"];
-		this.lte = this.vue_sample_params_copy["age less than"];
+		this.gte = this.age_more_than;
+		this.lte = this.age_less_than;
 		this.$emit("update:param_string", this.ps);
 	},
 	template: "#p_age-component"
@@ -565,8 +566,8 @@ const p_age_intervals_component = {
 	computed: {
 		ps: function() {
 			this.age_breakpoints = this.age_intervals.filter(a => a.selected && a.show_edge).map(a => a.value);
-			let gte = this.vue_sample_params_copy["age more than"];
-			let lte = this.vue_sample_params_copy["age less than"];
+			let gte = this.vue_sample_params_copy["age_more_than"];
+			let lte = this.vue_sample_params_copy["age_less_than"];
 
 			let dbl = [gte, ...[].concat(...this.age_breakpoints.map(a => [a, a + 1])), lte];
 			let pairs = Array.from({length: dbl.length / 2}, (_, i) => i).map(a => dbl.slice(a * 2, a * 2 + 2));
@@ -584,8 +585,8 @@ const p_age_intervals_component = {
 	},
 	watch: {
 		vue_sample_params_copy: function() {
-			let gte = this.vue_sample_params_copy["age more than"];
-			let lte = this.vue_sample_params_copy["age less than"];
+			let gte = this.vue_sample_params_copy["age_more_than"];
+			let lte = this.vue_sample_params_copy["age_less_than"];
 
 			this.age_intervals = this.age_intervals.map(a => ({...a, "show_node": a.value >= gte && a.value <= lte, "show_edge": a.value >= gte && a.value <= lte - 1}));
 		},
@@ -673,7 +674,7 @@ const param_block = {
 		"p_strata_region-component": p_strata_region_component,
 		"p_strata_type-component": p_strata_type_component,
 		// "p_gender-component": p_gender_component,
-		"p_age-component": p_age_component,
+		// "p_age-component": p_age_component,
 		"p_age_intervals-component": p_age_intervals_component
 		// "p_sample_size-component": p_sample_size_component,
 		// "p_cluster_size-component": p_cluster_size_component

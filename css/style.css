@@ -82,7 +82,7 @@ button:focus {
 	justify-content: space-between;
 
 	width: 100%;
-/*	padding: 2px;*/
+	padding: 2px 0;
 /*	mergin: 2px;*/
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
