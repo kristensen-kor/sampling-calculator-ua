@@ -35,8 +35,8 @@ function sample_calc(sample_params) {
 
 
 	p.quotas_string = [];
-	if (["full", "gender"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age intervals"])).flatMap(a => sample_params["gender"].map(b => `${b.toUpperCase()} ${a}`));
-	if (["age", "no"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age intervals"]));
+	if (["full", "gender"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age_intervals"])).flatMap(a => sample_params["gender"].map(b => `${b.toUpperCase()} ${a}`));
+	if (["age", "no"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age_intervals"]));
 
 
 	let local_main_db = convertToArrayOfObjects(db_main);
@@ -93,8 +93,8 @@ function sample_calc(sample_params) {
 		}
 
 		for (let x of local_age_db) {
-			if (["full", "gender"].includes(p.quota_type)) x.quota = `${x.gender.toUpperCase()} ${sample_params["age intervals"][x.age]}`;
-			if (["age", "no"].includes(p.quota_type)) x.quota = sample_params["age intervals"][x.age];
+			if (["full", "gender"].includes(p.quota_type)) x.quota = `${x.gender.toUpperCase()} ${sample_params["age_intervals"][x.age]}`;
+			if (["age", "no"].includes(p.quota_type)) x.quota = sample_params["age_intervals"][x.age];
 		}
 
 		const unique_quota = [...new Set(local_age_db.map(x => x.quota))];

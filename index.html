@@ -75,7 +75,15 @@
 						></p_age-component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block>
+					<param-block2 name_text="Возрастные интервалы" :param_string="param_strings.age_intervals" v-show="quota_show">
+						<p_age_intervals-component v-model:param_string="param_strings.age_intervals"
+							v-model:param="sample_params.age_intervals"
+							:age_more_than="sample_params.age_more_than"
+							:age_less_than="sample_params.age_less_than"
+						></p_age_intervals-component>
+					</param-block2>
+
+					<!-- <param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block> -->
 
 					<param-block2 name_text="Размер" :param_string="param_strings.sample_size" v-show="sample_size_show">
 						<p_sample_size-component v-model:param_string="param_strings.sample_size" v-model:param="sample_params.sample_size"></p_sample_size-component>
@@ -224,13 +232,13 @@
 	<div>
 		<div class="table collapse">
 			<div class="cell">
-				<input type="number" class="f_age" min="0" :max="lte" v-model.number="gte">
+				<input type="number" style="width: 5ch;" min="0" :max="lte" v-model.number="gte">
 			</div>
 			<div class="cell">
 				<span>&nbsp;&ndash;&nbsp;</span>
 			</div>
 			<div class="cell">
-				<input type="number" class="f_age" :min="gte" max="80" v-model.number="lte">
+				<input type="number" style="width: 5ch;" :min="gte" max="80" v-model.number="lte">
 			</div>
 		</div>
 	</div>
@@ -240,16 +248,16 @@
 <template id="p_age_intervals-component">
 	<div>
 		<div id="f_age_groups" class="table">
-				<template v-for="ai of age_intervals">
-					<div class="node" v-show="ai.show_node">
-						<div class="node-delim"></div>
-						<div class="node-caption">{{ ai.value }}</div>
-					</div>
+			<template v-for="ai of age_intervals">
+				<div class="node" v-show="ai.show_node">
+					<div class="node-delim"></div>
+					<div class="node-caption">{{ ai.value }}</div>
+				</div>
 
-					<div class="edge e_age_intervals" v-if="ai.value != 80" v-show="ai.show_edge" @click="change_state(ai.value)">
-						<div class="edge-line" :class="{'edge-line-invis': ai.selected}"></div>
-					</div>
-				</template>
+				<div class="edge e_age_intervals" v-if="ai.value != 80" v-show="ai.show_edge" @click="change_state(ai.value)">
+					<div class="edge-line" :class="{'edge-line-invis': ai.selected}"></div>
+				</div>
+			</template>
 		</div>
 		<button class="f_age_groups_reset" @click="reset">Сброс</button>
 	</div>

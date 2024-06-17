@@ -539,47 +539,55 @@ const p_age_component = {
 
 
 const p_age_intervals_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param", "age_more_than", "age_less_than"],
 	data: function() {
 		return {
-			age_intervals: [],
-			age_intervals_corr: {},
-			age_breakpoints: []
+			age_intervals: []
 		};
 	},
 	computed: {
-		ps: function() {
-			this.age_breakpoints = this.age_intervals.filter(a => a.selected && a.show_edge).map(a => a.value);
-			let gte = this.vue_sample_params_copy["age_more_than"];
-			let lte = this.vue_sample_params_copy["age_less_than"];
+		pairs: function() {
+			const age_breakpoints = this.age_intervals.filter(a => a.selected && a.show_edge).map(a => a.value);
+			const unrolled_array = [this.age_more_than, ...age_breakpoints.flatMap(a => [a, a + 1]), this.age_less_than];
 
-			let dbl = [gte, ...[].concat(...this.age_breakpoints.map(a => [a, a + 1])), lte];
-			let pairs = Array.from({length: dbl.length / 2}, (_, i) => i).map(a => dbl.slice(a * 2, a * 2 + 2));
-			let strings = pairs.map(a => a[1] == 80 ? a[0] + "+" : a.join("-"));
-
-			this.age_intervals_corr = {};
+			return iota(unrolled_array.length / 2).map(i => unrolled_array.slice(i * 2, i * 2 + 2));
+		},
+		strings: function() {
+			return this.pairs.map(a => a[1] == 80 ? a[0] + "+" : a.join("-"));
+		},
+		age_intervals_corr: function() {
+			let res = {};
 			let si = 0;
-			for (let i = gte; i <= lte; i++) {
-				this.age_intervals_corr[i] = strings[si];
-				if (i == pairs[si][1]) si++;
+
+			for (let i = this.age_more_than; i <= this.age_less_than; i++) {
+				res[i] = this.strings[si];
+				if (i == this.pairs[si][1]) si++;
 			}
 
-			return strings.join(", ");
+			return res;
 		}
 	},
 	watch: {
-		vue_sample_params_copy: function() {
-			let gte = this.vue_sample_params_copy["age_more_than"];
-			let lte = this.vue_sample_params_copy["age_less_than"];
-
-			this.age_intervals = this.age_intervals.map(a => ({...a, "show_node": a.value >= gte && a.value <= lte, "show_edge": a.value >= gte && a.value <= lte - 1}));
+		age_more_than: function() {
+			this.update_range();
 		},
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "age intervals": this.age_intervals_corr, "age breakpoints": this.age_breakpoints});
+		age_less_than: function() {
+			this.update_range();
+		},
+		age_intervals_corr: function(value) {
+			this.$emit("update:param", value);
+		},
+		strings: function(value) {
+			this.$emit("update:param_string", value.join(", "));
 		}
 	},
 	methods: {
+		update_range: function() {
+			for (let a of this.age_intervals) {
+				a.show_node = a.value >= this.age_more_than && a.value <= this.age_less_than;
+				a.show_edge = a.value >= this.age_more_than && a.value <= this.age_less_than - 1;
+			}
+		},
 		change_state: function(i) {
 			this.age_intervals[i].selected = !this.age_intervals[i].selected;
 		},
@@ -588,16 +596,9 @@ const p_age_intervals_component = {
 		}
 	},
 	mounted: function() {
-		for (let i = 0; i < 80; i++) {
-			this.age_intervals.push({"value": i, "text": i});
-		}
-		this.age_intervals.push({"value": "80", "text": "80+"});
+		this.age_intervals = iota(81).map(i => ({ value: i, selected: false }));
 
-		this.age_intervals = this.age_intervals.map(a => a = {...a, selected: false});
-
-		this.vue_sample_params_copy["age breakpoints"].forEach(a => this.age_intervals[a].selected = true);
-
-		this.$emit("update:param_string", this.ps);
+		this.update_range();
 	},
 	template: "#p_age_intervals-component"
 }
@@ -656,10 +657,10 @@ const param_block = {
 		// "p_types-component": p_types_component,
 		"p_population-component": p_population_component,
 		"p_strata_region-component": p_strata_region_component,
-		"p_strata_type-component": p_strata_type_component,
+		"p_strata_type-component": p_strata_type_component
 		// "p_gender-component": p_gender_component,
 		// "p_age-component": p_age_component,
-		"p_age_intervals-component": p_age_intervals_component
+		// "p_age_intervals-component": p_age_intervals_component
 		// "p_sample_size-component": p_sample_size_component,
 		// "p_cluster_size-component": p_cluster_size_component
 	},
