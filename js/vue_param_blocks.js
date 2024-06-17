@@ -140,12 +140,13 @@ const p_oblasts_component = {
 			get: function() {
 				const value = this.param;
 
-				let ps =  value.join(", ");
+				let ps = value.join(", ");
 
 				const excluded = this.oblasts.filter(a => !value.includes(a));
 
 				if (excluded.length <= 4) {
 					ps = "Все";
+
 					if (excluded.length > 0) {
 						ps += ", кроме " + excluded.join(", ");
 					}
