@@ -505,50 +505,34 @@ const p_gender_component = {
 
 const p_age_component = {
 	props: ["param_string", "age_more_than", "age_less_than"],
-	data: function() {
-		return {
-			gte: "",
-			lte: ""
-		};
-	},
 	computed: {
-		ps: function() {
-			if (this.lte == 80) {
-				return this.gte + "+";
-			} else {
-				return this.gte + "-" + this.lte;
+		gte: {
+			get: function() {
+				return this.age_more_than;
+			},
+			set: function(value) {
+				if (value <= this.lte) this.$emit("update:age_more_than", value);
 			}
+		},
+		lte: {
+			get: function() {
+				return this.age_less_than;
+			},
+			set: function(value) {
+				if (value >= this.gte) this.$emit("update:age_less_than", value);
+			}
+		},
+		ps: function() {
+			return this.gte + (this.lte == 80 ? "+" : "-" + this.lte);
 		}
 	},
 	watch: {
-		gte: function(value) {
-			if (value < 0) this.gte = 0;
-			if (value > this.lte) this.gte = this.lte;
-		},
-		lte: function(value) {
-			if (value > 80) this.lte = 80;
-			if (value < this.gte) this.lte = this.gte;
-		},
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-			this.$emit("update:age_more_than", this.gte);
-			this.$emit("update:age_less_than", this.lte);
+		ps: {
+			handler(value) {
+				this.$emit("update:param_string", value);
+			},
+			immediate: true
 		}
-	},
-	methods: {
-		wheel_gte: function(e) {
-			if (e.deltaY < 0 && this.gte < 80) this.gte++;
-			if (e.deltaY > 0 && this.gte > 0) this.gte--;
-		},
-		wheel_lte: function(e) {
-			if (e.deltaY < 0 && this.lte < 80) this.lte++;
-			if (e.deltaY > 0 && this.lte > 0) this.lte--;
-		},
-	},
-	mounted: function() {
-		this.gte = this.age_more_than;
-		this.lte = this.age_less_than;
-		this.$emit("update:param_string", this.ps);
 	},
 	template: "#p_age-component"
 }

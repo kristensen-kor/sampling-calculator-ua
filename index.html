@@ -224,13 +224,13 @@
 	<div>
 		<div class="table collapse">
 			<div class="cell">
-				<input type="number" class="f_age" min="0" max="80" v-model.number="gte" @wheel.prevent="wheel_gte">
+				<input type="number" class="f_age" min="0" :max="lte" v-model.number="gte">
 			</div>
 			<div class="cell">
 				<span>&nbsp;&ndash;&nbsp;</span>
 			</div>
 			<div class="cell">
-				<input type="number" class="f_age" min="0" max="80" v-model.number="lte" @wheel.prevent="wheel_lte">
+				<input type="number" class="f_age" :min="gte" max="80" v-model.number="lte">
 			</div>
 		</div>
 	</div>
