@@ -77,8 +77,8 @@
 
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block>
 
-					<param-block2 name_text="Размер" :param_string="param_strings['sample size']" v-show="sample_size_show">
-						<p_sample_size-component v-model:param_string="param_strings['sample size']" v-model:param="sample_params['sample size']"></p_sample_size-component>
+					<param-block2 name_text="Размер" :param_string="param_strings.sample_size" v-show="sample_size_show">
+						<p_sample_size-component v-model:param_string="param_strings.sample_size" v-model:param="sample_params.sample_size"></p_sample_size-component>
 					</param-block2>
 
 					<param-block2 name_text="Нагрузка на точку" :param_string="param_strings.cluster_size" v-show="cluster_show">

@@ -130,5 +130,10 @@ app.mount("#app");
 // 	if (event.target.tagName == "BUTTON") event.target.blur();
 // });
 
+// wheel event fix
+document.addEventListener("wheel", function(event) {
+	if (event.target.type == "number") event.target.focus();
+});
+
 // lc 581
 // lc 233

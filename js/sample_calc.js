@@ -174,7 +174,7 @@ function sample_calc(sample_params) {
 
 			if (sample_params["calc_type"] == "online") {
 				for (let stratum of local_strata_db) {
-					stratum.quotas_sample = stratum.quotas_gp.map(a => a / gp_sum * sample_params["sample size"]);
+					stratum.quotas_sample = stratum.quotas_gp.map(a => a / gp_sum * sample_params.sample_size);
 				}
 			}
 		}
@@ -191,7 +191,7 @@ function sample_calc(sample_params) {
 	// calc sample
 	if (sample_params["calc_type"] == "cities") {
 		for (let x of local_main_db) {
-			x.sample_raw = x.gp / gp_sum * sample_params["sample size"];
+			x.sample_raw = x.gp / gp_sum * sample_params.sample_size;
 			x.sample_raw_quotas = p.quotas_string.map(a => x.sample_raw * quotas[x.key_join_age][a]);
 		}
 	}
@@ -200,7 +200,7 @@ function sample_calc(sample_params) {
 
 	if (sample_params["calc_type"] == "standard") {
 		for (let stratum of local_strata_db) {
-			stratum.sample = stratum.gp / gp_sum * sample_params["sample size"];
+			stratum.sample = stratum.gp / gp_sum * sample_params.sample_size;
 			stratum.cluster_count = stratum.clusters.length;
 		}
 
@@ -210,7 +210,7 @@ function sample_calc(sample_params) {
 			if (stratum.sample / stratum.cluster_count >= sample_params["cluster_size"]) {
 				stratum.sample_clusters = stratum.clusters;
 				for (cluster of stratum.sample_clusters) {
-					cluster.real_sample = cluster.gp / gp_sum * sample_params["sample size"];
+					cluster.real_sample = cluster.gp / gp_sum * sample_params.sample_size;
 				}
 			} else {
 				const cnt = Math.max(1, round(stratum.sample / sample_params["cluster_size"]));

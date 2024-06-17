@@ -635,7 +635,7 @@ const p_sample_size_component = {
 	},
 	template: `
 		<div>
-			<input type="number" style='width: 8ch;' min="0" v-model.number="value" @wheel="">
+			<input type="number" style='width: 8ch;' min="0" v-model.number="value">
 		</div>`
 }
 
@@ -656,7 +656,7 @@ const p_cluster_size_component = {
 	},
 	template: `
 	<div>
-		<input type="number" style='width: 6ch;' min="0" v-model.number="value" @wheel="">
+		<input type="number" style='width: 6ch;' min="0" v-model.number="value">
 	</div>`
 }
 
