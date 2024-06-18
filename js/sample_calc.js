@@ -1,3 +1,14 @@
+function convertToArrayOfObjects(db) {
+	let keys = Object.keys(db);
+	let result = [];
+
+	for (let i = 0; i < db[keys[0]].length; i++) {
+		result.push(Object.fromEntries(keys.map(key => [key, db[key][i]])));
+	}
+
+	return result;
+}
+
 function quotas_sort(xs) {
 	let ys = {};
 
@@ -15,24 +26,26 @@ function sample_calc(sample_params) {
 	p.is_cities_calc = ["cities", "gp_cities"].includes(sample_params["calc_type"]);
 	p.is_strata_calc = ["online", "gp"].includes(sample_params["calc_type"]);
 
-	p.quota_type = "no"
-	if (["standard", "online", "cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_quotas"]) p.quota_type = "full";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "full";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && sample_params["calc_type_gender_split"] && !sample_params["calc_type_age_split"]) p.quota_type = "gender";
-	if (["gp", "gp_cities"].includes(sample_params["calc_type"]) && !sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "age";
 
+	p.quota_type = "no"
+	if (!p.is_gp_calc && sample_params["calc_type_quotas"]) p.quota_type = "full";
+	if (p.is_gp_calc && sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "full";
+	if (p.is_gp_calc && sample_params["calc_type_gender_split"] && !sample_params["calc_type_age_split"]) p.quota_type = "gender";
+	if (p.is_gp_calc && !sample_params["calc_type_gender_split"] && sample_params["calc_type_age_split"]) p.quota_type = "age";
 
 
 	p.quotas_string = [];
-	if (["full", "gender"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age intervals"])).flatMap(a => sample_params["gender"].map(b => `${b.toUpperCase()} ${a}`));
-	if (["age", "no"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age intervals"]));
+	if (["full", "gender"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age_intervals"])).flatMap(a => sample_params["gender"].map(b => `${b.toUpperCase()} ${a}`));
+	if (["age", "no"].includes(p.quota_type)) p.quotas_string = quotas_sort(Object.values(sample_params["age_intervals"]));
 
 
-	let local_main_db = structuredClone(db_main2);
-	let local_age_db = structuredClone(db_age2);
+	let local_main_db = convertToArrayOfObjects(db_main);
+	let local_age_db = convertToArrayOfObjects(db_age);
 
-	if (["standard", "online", "gp"].includes(sample_params["calc_type"])) {
-		local_main_db = local_main_db.filter(x => sample_params.oblasts.includes(x.oblast) && sample_params.types.includes(x.type));
+	if (p.is_cities_calc) {
+		local_main_db = local_main_db.filter(x => x.population >= 50000 && sample_params["cities"].includes(x.name));
+	} else {
+		local_main_db = local_main_db.filter(x => sample_params["oblasts"].includes(x.oblast) && sample_params["types"].includes(x.type));
 
 		if (sample_params["population more than"] != 0) {
 			const population_more = Number(sample_params["population more than"]) * 1000;
@@ -43,10 +56,6 @@ function sample_calc(sample_params) {
 			const population_less = Number(sample_params["population less than"]) * 1000;
 			local_main_db = local_main_db.filter(x => x.population <= population_less);
 		}
-	}
-
-	if (["cities", "gp_cities"].includes(sample_params["calc_type"])) {
-		local_main_db = local_main_db.filter(x => x.population >= 50000 && sample_params.cities.includes(x.name));
 	}
 
 
@@ -60,7 +69,7 @@ function sample_calc(sample_params) {
 		total_sum[key] = sum(local_age_db.filter(x => x.key_join_age == key).map(x => x.cnt));
 	}
 
-	local_age_db = local_age_db.filter(x => sample_params["gender"].includes(x.gender) && x.age >= sample_params["age more than"] && x.age <= sample_params["age less than"])
+	local_age_db = local_age_db.filter(x => sample_params["gender"].includes(x.gender) && x.age >= sample_params["age_more_than"] && x.age <= sample_params["age_less_than"])
 
 	let frac = {};
 
@@ -84,8 +93,8 @@ function sample_calc(sample_params) {
 		}
 
 		for (let x of local_age_db) {
-			if (["full", "gender"].includes(p.quota_type)) x.quota = `${x.gender.toUpperCase()} ${sample_params["age intervals"][x.age]}`;
-			if (["age", "no"].includes(p.quota_type)) x.quota = sample_params["age intervals"][x.age];
+			if (["full", "gender"].includes(p.quota_type)) x.quota = `${x.gender.toUpperCase()} ${sample_params["age_intervals"][x.age]}`;
+			if (["age", "no"].includes(p.quota_type)) x.quota = sample_params["age_intervals"][x.age];
 		}
 
 		const unique_quota = [...new Set(local_age_db.map(x => x.quota))];
@@ -165,7 +174,7 @@ function sample_calc(sample_params) {
 
 			if (sample_params["calc_type"] == "online") {
 				for (let stratum of local_strata_db) {
-					stratum.quotas_sample = stratum.quotas_gp.map(a => a / gp_sum * sample_params["sample size"]);
+					stratum.quotas_sample = stratum.quotas_gp.map(a => a / gp_sum * sample_params.sample_size);
 				}
 			}
 		}
@@ -182,7 +191,7 @@ function sample_calc(sample_params) {
 	// calc sample
 	if (sample_params["calc_type"] == "cities") {
 		for (let x of local_main_db) {
-			x.sample_raw = x.gp / gp_sum * sample_params["sample size"];
+			x.sample_raw = x.gp / gp_sum * sample_params.sample_size;
 			x.sample_raw_quotas = p.quotas_string.map(a => x.sample_raw * quotas[x.key_join_age][a]);
 		}
 	}
@@ -191,20 +200,20 @@ function sample_calc(sample_params) {
 
 	if (sample_params["calc_type"] == "standard") {
 		for (let stratum of local_strata_db) {
-			stratum.sample = stratum.gp / gp_sum * sample_params["sample size"];
+			stratum.sample = stratum.gp / gp_sum * sample_params.sample_size;
 			stratum.cluster_count = stratum.clusters.length;
 		}
 
 		for (let stratum of local_strata_db) {
 			stratum.sample_clusters = [];
 
-			if (stratum.sample / stratum.cluster_count >= sample_params["cluster size"]) {
+			if (stratum.sample / stratum.cluster_count >= sample_params["cluster_size"]) {
 				stratum.sample_clusters = stratum.clusters;
 				for (cluster of stratum.sample_clusters) {
-					cluster.real_sample = cluster.gp / gp_sum * sample_params["sample size"];
+					cluster.real_sample = cluster.gp / gp_sum * sample_params.sample_size;
 				}
 			} else {
-				const cnt = Math.max(1, round(stratum.sample / sample_params["cluster size"]));
+				const cnt = Math.max(1, round(stratum.sample / sample_params["cluster_size"]));
 				const sample = stratum.sample / cnt;
 
 				let index_map = [];
@@ -239,7 +248,7 @@ function sample_calc(sample_params) {
 
 
 
-	// round
+	// rounding
 	let quotas_to_round = [];
 	let rounded_quotas = [];
 
@@ -289,8 +298,12 @@ function sample_calc(sample_params) {
 	if (p.is_gp_calc) res["gp"] = sum(rounded_quotas.map(sum));
 	if (!p.is_gp_calc) res["gp"] = round(gp_sum);
 
-	if (["gp", "online"].includes(sample_params.calc_type)) {
-		res["cities_correspondence"] = local_strata_db;
+	res["cities_correspondence"] = "";
+
+	if (p.is_strata_calc) {
+		const header = ["name", "rayon", "oblast", "type", "population", "stratum region", "stratum type"];
+		const data = local_strata_db.flatMap(stratum => stratum.clusters.map(c => [c.name, c.rayon, c.oblast, c.type, c.population, c.stratum_region, c.stratum_type]));
+		res["cities_correspondence"] = [header, ...data].map(row => row.join("\t")).join("\n");
 	}
 
 	return res;

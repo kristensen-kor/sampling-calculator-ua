@@ -1,37 +1,28 @@
+// function param_string_change3() {
+// 	this.$emit("update:param_string", this.param_string_local);
+// }
 
+// function update_param(param_name) {
+// 	return function(value) {
+// 		this.$emit(`update:${param_name}`, value);
+// 	}
+// }
 
-function param_string_change3() {
-	this.$emit("update:param_string", this.param_string_local);
+function bind_value(param_name) {
+	return {
+		get() {
+			return this[param_name];
+		},
+		set(value) {
+			this.$emit(`update:${param_name}`, value);
+		}
+	};
 }
-
-function param_string_change5(self) {
-	(self ? self : this).$emit("update:param_string", (self ? self : this).param_string_local);
-}
-
-function update_param(param_name) {
-	return function(value) {
-		console.log(this, param_name, value);
-		this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, param_name: value});
-	}
-}
-
-function update_param_simple(self, param_name, value) {
-	console.log(self, param_name, value);
-	self.$emit("update:vue_sample_params_copy", {...self.vue_sample_params_copy, param_name: value});
-}
-
-const param_string_change2 = () => {this.$emit("update:param_string", this.param_string_local);};
-const param_string_change4 = self => {self.$emit("update:param_string", self.param_string_local);};
-
 
 const p_calc_type_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "calc_type", "calc_type_quotas", "calc_type_gender_split", "calc_type_age_split"],
 	data: function() {
 		return {
-			v_calc_type: this.vue_sample_params_copy["calc_type"],
-			v_calc_type_quotas: this.vue_sample_params_copy["calc_type_quotas"],
-			v_calc_type_gender_split: this.vue_sample_params_copy["calc_type_gender_split"],
-			v_calc_type_age_split: this.vue_sample_params_copy["calc_type_age_split"],
 			items: {
 				online: "Выборка для Online/CATI",
 				cities: "Выборка по конкретным городам",
@@ -45,6 +36,10 @@ const p_calc_type_component = {
 		};
 	},
 	computed: {
+		v_calc_type: bind_value("calc_type"),
+		v_calc_type_quotas: bind_value("calc_type_quotas"),
+		v_calc_type_gender_split: bind_value("calc_type_gender_split"),
+		v_calc_type_age_split: bind_value("calc_type_age_split"),
 		show_quotas_options_checkbox: function() {
 			return (["gp", "gp_cities"].includes(this.v_calc_type)) ? false : true;
 		},
@@ -62,29 +57,18 @@ const p_calc_type_component = {
 		}
 	},
 	watch: {
-		v_calc_type: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type": value});
-		},
-		v_calc_type_quotas: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_quotas": value});
-		},
-		v_calc_type_gender_split: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_gender_split": value});
-		},
-		v_calc_type_age_split: function(value) {
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "calc_type_age_split": value});
-		},
 		param_string_local: function() {
-			param_string_change4(this);
+			this.$emit("update:param_string", this.param_string_local);
 		}
 	},
-	mounted: param_string_change3,
+	mounted: function() {
+		this.$emit("update:param_string", this.param_string_local);
+	},
 	template: "#p_calc_type-component"
 };
 
-
 const p_base_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			options: [
@@ -95,21 +79,26 @@ const p_base_component = {
 	computed: {
 		v_base: {
 			get: function() {
-				let value = this.vue_sample_params_copy["base"];
+				let value = this.param;
 				this.$emit("update:param_string", this.options.filter(a => a.value == value)[0].text);
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "base": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	template: "#p_base-component"
+	template: `
+		<div>
+			<label v-for="option in options">
+				<input type="radio" v-model="v_base" name="f_base" :value="option.value">{{ option.text }}
+			</label>
+		</div>`
 };
 
 
 const p_oblasts_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			oblasts: [
@@ -138,21 +127,26 @@ const p_oblasts_component = {
 				"Хмельницька",
 				"Черкаська",
 				"Чернівецька",
-				"Чернігівська",
+				"Чернігівська"
+			],
+			unavailable: [
+				"АР Крим",
+				"Луганська"
 			]
 		};
 	},
 	computed: {
 		selected: {
 			get: function() {
-				const value = this.vue_sample_params_copy["oblasts"];
+				const value = this.param;
 
-				let ps =  value.join(", ");
+				let ps = value.join(", ");
 
 				const excluded = this.oblasts.filter(a => !value.includes(a));
 
-				if (excluded.length <= 3) {
+				if (excluded.length <= 4) {
 					ps = "Все";
+
 					if (excluded.length > 0) {
 						ps += ", кроме " + excluded.join(", ");
 					}
@@ -163,13 +157,13 @@ const p_oblasts_component = {
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "oblasts": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
 	methods: {
 		select_all: function() {
-			this.selected = this.oblasts.slice(1);
+			this.selected = this.oblasts.filter(x => !this.unavailable.includes(x));
 		},
 		clear_selection: function() {
 			this.selected = [];
@@ -179,89 +173,90 @@ const p_oblasts_component = {
 };
 
 
+const p_types_component = {
+	props: ["param_string", "param"],
+	computed: {
+		selected: {
+			get: function() {
+				const value = this.param;
+				this.$emit("update:param_string", value.length == 3 ? "Все" : value.join(", "));
+				return value;
+			},
+			set: function(value) {
+				this.$emit("update:param", value);
+			}
+		}
+	},
+	template: `
+		<div>
+			<label><input type="checkbox" v-model="selected" value="Місто">Город</label>
+			<label><input type="checkbox" v-model="selected" value="СМТ">ПГТ</label>
+			<label><input type="checkbox" v-model="selected" value="Село" disabled>Село</label>
+		</div>`
+};
+
 
 const p_cities_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
-			cities_data: [
-				"city_01\tКиїв\tКиїв*\tКиїв\t2769559\ttrue",
-				"city_02\tХарків\tХарків*\tХарківська\t1333160\ttrue",
-				"city_03\tОдеса\tОдеса*\tОдеська\t947987\ttrue",
-				"city_04\tДніпро\tДніпро*\tДніпропетровська\t908554\ttrue",
-				"city_05\tДонецьк\tДонецьк*\tДонецька\tNA\tfalse",
-				"city_06\tЗапоріжжя\tЗапоріжжя*\tЗапорізька\t666101\tfalse",
-				"city_07\tЛьвів\tЛьвів*\tЛьвівська\t672875\ttrue",
-				"city_08\tКривий Ріг\tКривий Ріг\tДніпропетровська\t566523\tfalse",
-				"city_09\tМиколаїв\tМиколаїв*\tМиколаївська\t440918\tfalse",
-				"city_10\tМаріуполь\tМаріуполь\tДонецька\tNA\tfalse",
-				"city_11\tЛуганськ\tЛуганськ*\tЛуганська\tNA\tfalse",
-				"city_12\tВінниця\tВінниця*\tВінницька\t346853\tfalse",
-				"city_13\tМакіївка\tМакіївка\tДонецька\tNA\tfalse",
-				"city_14\tСевастополь\tСевастополь\tАР Крим\tNA\tfalse",
-				"city_15\tСімферополь\tСімферополь*\tАР Крим\tNA\tfalse",
-				"city_16\tХерсон\tХерсон*\tХерсонська\t66991\tfalse",
-				"city_18\tЧернігів\tЧернігів*\tЧернігівська\t265246\tfalse",
-				"city_17\tПолтава\tПолтава*\tПолтавська\t262287\tfalse",
-				"city_19\tЧеркаси\tЧеркаси*\tЧеркаська\t253134\tfalse",
-				"city_22\tХмельницький\tХмельницький*\tХмельницька\t257464\tfalse",
-				"city_21\tСуми\tСуми*\tСумська\t240599\tfalse",
-				"city_20\tЖитомир\tЖитомир*\tЖитомирська\t245430\tfalse",
-				"city_23\tЧернівці\tЧернівці*\tЧернівецька\t247938\tfalse",
-				"city_24\tГорлівка\tГорлівка\tДонецька\tNA\tfalse",
-				"city_25\tРівне\tРівне*\tРівненська\t228778\tfalse",
-				"city_26\tКам'янське\tКам'янське\tДніпропетровська\t212804\tfalse",
-				"city_27\tКропивницький\tКропивницький*\tКіровоградська\t206078\tfalse",
-				"city_28\tІвано-Франківськ\tІвано-Франківськ*\tІвано-Франківська\t223452\tfalse",
-				"city_29\tКременчук\tКременчук\tПолтавська\t201946\tfalse",
-				"city_30\tТернопіль\tТернопіль*\tТернопільська\t211077\tfalse",
-				"city_31\tЛуцьк\tЛуцьк*\tВолинська\t202617\tfalse",
-				"city_32\tБіла Церква\tБіла Церква\tКиївська\t194443\tfalse",
-				"city_33\tКраматорськ\tКраматорськ\tДонецька\t35315\tfalse",
-				"city_34\tМелітополь\tМелітополь\tЗапорізька\tNA\tfalse",
-				"city_35\tКерч\tКерч\tАР Крим\tNA\tfalse",
-				"city_36\tУжгород\tУжгород*\tЗакарпатська\t108303\tfalse"
-			]
+			cities : []
 		};
 	},
 	computed: {
-		cities: function() {
-			return this.cities_data.map(a => a.split("\t"));
-		},
 		selected_cities: {
 			get: function() {
-				let value = this.vue_sample_params_copy["cities"];
+				let value = this.param;
 				this.$emit("update:param_string", value.join(", "));
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "cities": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
 	methods: {
 		clear_selection: function() {
 			this.selected_cities = [];
+		},
+		select_centers: function() {
+			this.selected_cities = this.cities.filter(a => a[4] == "✓").map(a => a[1]);
 		}
+	},
+	mounted: function () {
+		const cities_data = [
+			"city_01\tКиїв\tКиїв\t2769559\t✓",
+			"city_02\tХарків\tХарківська\t1333160\t✓",
+			"city_03\tОдеса\tОдеська\t947987\t✓",
+			"city_04\tДніпро\tДніпропетровська\t908554\t✓",
+			"city_07\tЛьвів\tЛьвівська\t672875\t✓",
+			"city_06\tЗапоріжжя\tЗапорізька\t666101\t✓",
+			"city_08\tКривий Ріг\tДніпропетровська\t566523\t",
+			"city_09\tМиколаїв\tМиколаївська\t440918\t✓",
+			"city_12\tВінниця\tВінницька\t346853\t✓",
+			"city_18\tЧернігів\tЧернігівська\t265246\t✓",
+			"city_17\tПолтава\tПолтавська\t262287\t✓",
+			"city_22\tХмельницький\tХмельницька\t257464\t✓",
+			"city_19\tЧеркаси\tЧеркаська\t253134\t✓",
+			"city_23\tЧернівці\tЧернівецька\t247938\t✓",
+			"city_20\tЖитомир\tЖитомирська\t245430\t✓",
+			"city_21\tСуми\tСумська\t240599\t✓",
+			"city_25\tРівне\tРівненська\t228778\t✓",
+			"city_28\tІвано-Франківськ\tІвано-Франківська\t223452\t✓",
+			"city_26\tКам'янське\tДніпропетровська\t212804\t",
+			"city_30\tТернопіль\tТернопільська\t211077\t✓",
+			"city_27\tКропивницький\tКіровоградська\t206078\t✓",
+			"city_31\tЛуцьк\tВолинська\t202617\t✓",
+			"city_29\tКременчук\tПолтавська\t201946\t",
+			"city_32\tБіла Церква\tКиївська\t194443\t",
+			"city_36\tУжгород\tЗакарпатська\t108303\t✓",
+			"city_16\tХерсон\tХерсонська\t66991\t✓",
+			"city_33\tКраматорськ\tДонецька\t35315\t"
+		]
+
+		this.cities = cities_data.map(a => a.split("\t"));
 	},
 	template: "#p_cities-component"
-};
-
-const p_types_component = {
-	props: ["param_string", "vue_sample_params_copy"],
-	computed: {
-		selected: {
-			get: function() {
-				let value = this.vue_sample_params_copy["types"];
-				this.$emit("update:param_string", value.length == 3 ? "Все" : value.join(", "));
-				return value;
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "types": value});
-			}
-		}
-	},
-	template: "#p_types-component"
 };
 
 
@@ -481,124 +476,119 @@ const p_strata_type_component = {
 
 
 const p_gender_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		selected: {
 			get: function() {
-				let value = this.vue_sample_params_copy["gender"];
+				const value = this.param;
 
-				let ps = "";
-				if (value.length == 2) {
-					ps = "Все";
-				} else {
-					if (value[0] == "m") ps = "Мужчины";
-					if (value[0] == "f") ps = "Женщины";
-				}
+				let ps = "Все";
+				if (value.length == 1 && value.includes("m")) ps = "Мужчины";
+				if (value.length == 1 && value.includes("f")) ps = "Женщины";
+
 				this.$emit("update:param_string", ps);
 
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "gender": value});
+				if (value.length == 0) value = this.param.includes("m") ? ["f"] : ["m"];
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	template: "#p_gender-component"
+	template: `
+		<div>
+			<label><input type="checkbox" v-model="selected" value="m">Мужчины</label>
+			<label><input type="checkbox" v-model="selected" value="f">Женщины</label>
+		</div>`
 }
 
 
 const p_age_component = {
-	props: ["param_string", "vue_sample_params_copy"],
-	data: function() {
-		return {
-			gte: "",
-			lte: ""
-		};
-	},
+	props: ["param_string", "age_more_than", "age_less_than"],
 	computed: {
-		ps: function() {
-			if (this.lte == 80) {
-				return this.gte + "+";
-			} else {
-				return this.gte + "-" + this.lte;
+		gte: {
+			get: function() {
+				return this.age_more_than;
+			},
+			set: function(value) {
+				if (value <= this.lte) this.$emit("update:age_more_than", value);
 			}
+		},
+		lte: {
+			get: function() {
+				return this.age_less_than;
+			},
+			set: function(value) {
+				if (value >= this.gte) this.$emit("update:age_less_than", value);
+			}
+		},
+		ps: function() {
+			return this.gte + (this.lte == 80 ? "+" : "-" + this.lte);
 		}
 	},
 	watch: {
-		gte: function(value) {
-			if (value < 0) this.gte = 0;
-			if (value > this.lte) this.gte = this.lte;
-		},
-		lte: function(value) {
-			if (value > 80) this.lte = 80;
-			if (value < this.gte) this.lte = this.gte;
-		},
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "age more than": this.gte, "age less than": this.lte});
+		ps: {
+			handler(value) {
+				this.$emit("update:param_string", value);
+			},
+			immediate: true
 		}
-	},
-	methods: {
-		wheel_gte: function(e) {
-			if (e.deltaY < 0 && this.gte < 80) this.gte++;
-			if (e.deltaY > 0 && this.gte > 0) this.gte--;
-		},
-		wheel_lte: function(e) {
-			if (e.deltaY < 0 && this.lte < 80) this.lte++;
-			if (e.deltaY > 0 && this.lte > 0) this.lte--;
-		},
-	},
-	mounted: function() {
-		this.gte = this.vue_sample_params_copy["age more than"];
-		this.lte = this.vue_sample_params_copy["age less than"];
-		this.$emit("update:param_string", this.ps);
 	},
 	template: "#p_age-component"
 }
 
 
 const p_age_intervals_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param", "age_more_than", "age_less_than"],
 	data: function() {
 		return {
-			age_intervals: [],
-			age_intervals_corr: {},
-			age_breakpoints: []
+			age_intervals: []
 		};
 	},
 	computed: {
-		ps: function() {
-			this.age_breakpoints = this.age_intervals.filter(a => a.selected && a.show_edge).map(a => a.value);
-			let gte = this.vue_sample_params_copy["age more than"];
-			let lte = this.vue_sample_params_copy["age less than"];
+		pairs: function() {
+			const age_breakpoints = this.age_intervals.filter(a => a.selected && a.show_edge).map(a => a.value);
+			const unrolled_array = [this.age_more_than, ...age_breakpoints.flatMap(a => [a, a + 1]), this.age_less_than];
 
-			let dbl = [gte, ...[].concat(...this.age_breakpoints.map(a => [a, a + 1])), lte];
-			let pairs = Array.from({length: dbl.length / 2}, (_, i) => i).map(a => dbl.slice(a * 2, a * 2 + 2));
-			let strings = pairs.map(a => a[1] == 80 ? a[0] + "+" : a.join("-"));
-
-			this.age_intervals_corr = {};
+			return iota(unrolled_array.length / 2).map(i => unrolled_array.slice(i * 2, i * 2 + 2));
+		},
+		strings: function() {
+			return this.pairs.map(a => a[1] == 80 ? a[0] + "+" : a.join("-"));
+		},
+		age_intervals_corr: function() {
+			let res = {};
 			let si = 0;
-			for (let i = gte; i <= lte; i++) {
-				this.age_intervals_corr[i] = strings[si];
-				if (i == pairs[si][1]) si++;
+
+			for (let i = this.age_more_than; i <= this.age_less_than; i++) {
+				res[i] = this.strings[si];
+				if (i == this.pairs[si][1]) si++;
 			}
 
-			return strings.join(", ");
+			return res;
 		}
 	},
 	watch: {
-		vue_sample_params_copy: function() {
-			let gte = this.vue_sample_params_copy["age more than"];
-			let lte = this.vue_sample_params_copy["age less than"];
-
-			this.age_intervals = this.age_intervals.map(a => ({...a, "show_node": a.value >= gte && a.value <= lte, "show_edge": a.value >= gte && a.value <= lte - 1}));
+		age_more_than: function() {
+			this.update_range();
 		},
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "age intervals": this.age_intervals_corr, "age breakpoints": this.age_breakpoints});
+		age_less_than: function() {
+			this.update_range();
+		},
+		age_intervals_corr: function(value) {
+			this.$emit("update:param", value);
+		},
+		strings: function(value) {
+			this.$emit("update:param_string", value.join(", "));
 		}
 	},
 	methods: {
+		update_range: function() {
+			for (let a of this.age_intervals) {
+				a.show_node = a.value >= this.age_more_than && a.value <= this.age_less_than;
+				a.show_edge = a.value >= this.age_more_than && a.value <= this.age_less_than - 1;
+			}
+		},
 		change_state: function(i) {
 			this.age_intervals[i].selected = !this.age_intervals[i].selected;
 		},
@@ -607,89 +597,73 @@ const p_age_intervals_component = {
 		}
 	},
 	mounted: function() {
-		for (let i = 0; i < 80; i++) {
-			this.age_intervals.push({"value": i, "text": i});
-		}
-		this.age_intervals.push({"value": "80", "text": "80+"});
+		this.age_intervals = iota(81).map(i => ({ value: i, selected: false }));
 
-		this.age_intervals = this.age_intervals.map(a => a = {...a, selected: false});
-
-		this.vue_sample_params_copy["age breakpoints"].forEach(a => this.age_intervals[a].selected = true);
-
-		this.$emit("update:param_string", this.ps);
+		this.update_range();
 	},
 	template: "#p_age_intervals-component"
 }
 
 
 const p_sample_size_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		value: {
 			get: function() {
-				const value = this.vue_sample_params_copy["sample size"];
-
+				const value = this.param;
 				this.$emit("update:param_string", value);
-
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "sample size": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	methods: {
-		wheel_value: function(e) {
-			if (e.deltaY < 0) this.value++;
-			if (e.deltaY > 0 && this.value > 1) this.value--;
-		}
-	},
-	template: "#p_sample_size-component"
+	template: `
+		<div>
+			<input type="number" style='width: 8ch;' min="0" v-model.number="value">
+		</div>`
 }
 
 
 const p_cluster_size_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	computed: {
 		value: {
 			get: function() {
-				const value = this.vue_sample_params_copy["cluster size"];
-
+				const value = this.param;
 				this.$emit("update:param_string", value);
-
 				return value;
 			},
 			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "cluster size": value});
+				this.$emit("update:param", value);
 			}
 		}
 	},
-	methods: {
-		wheel_value: function(e) {
-			if (e.deltaY < 0) this.value++;
-			if (e.deltaY > 0 && this.value > 1) this.value--;
-		}
-	},
-	template: "#p_cluster_size-component"
+	template: `
+	<div>
+		<input type="number" style='width: 6ch;' min="0" v-model.number="value">
+	</div>`
 }
+
 
 
 const param_block = {
 	props: ["selected_component", "name_text", "vue_sample_params_copy"],
 	components: {
-		"p_calc_type-component": p_calc_type_component,
-		"p_base-component": p_base_component,
-		"p_oblasts-component": p_oblasts_component,
-		"p_cities-component": p_cities_component,
-		"p_types-component": p_types_component,
+		// "p_calc_type-component": p_calc_type_component,
+		// "p_base-component": p_base_component,
+		// "p_oblasts-component": p_oblasts_component,
+		// "p_cities-component": p_cities_component,
+		// "p_types-component": p_types_component,
 		"p_population-component": p_population_component,
 		"p_strata_region-component": p_strata_region_component,
-		"p_strata_type-component": p_strata_type_component,
-		"p_gender-component": p_gender_component,
-		"p_age-component": p_age_component,
-		"p_age_intervals-component": p_age_intervals_component,
-		"p_sample_size-component": p_sample_size_component,
-		"p_cluster_size-component": p_cluster_size_component
+		"p_strata_type-component": p_strata_type_component
+		// "p_gender-component": p_gender_component,
+		// "p_age-component": p_age_component,
+		// "p_age_intervals-component": p_age_intervals_component
+		// "p_sample_size-component": p_sample_size_component,
+		// "p_cluster_size-component": p_cluster_size_component
 	},
 	data: function() {
 		return {
@@ -719,6 +693,21 @@ const param_block = {
 		}
 	},
 	template: "#param-block-component"
+};
+
+const param_block2 = {
+	props: ["name_text", "param_string"],
+	data: function() {
+		return {
+			is_opened: false
+		};
+	},
+	methods: {
+		controls_switch: function() {
+			this.is_opened = !this.is_opened;
+		}
+	},
+	template: "#param-block2-component"
 };
 
 // lc 753

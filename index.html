@@ -8,57 +8,93 @@
 	<!-- <link rel="stylesheet" href="css\normalize5.css"> -->
 	<!-- <link rel="stylesheet" href="css\normalize8.css"> -->
 	<!-- <link rel="stylesheet" href="css\standard.css"> -->
-	<link rel="stylesheet" href="css\solarized_std.css">
+	<!-- <link rel="stylesheet" href="css\solarized_std.css"> -->
 	<!-- <link id="solarized_style" rel="stylesheet" href="css\solarized_light.css"> -->
 	<link rel="stylesheet" href="css\global_style.css">
 	<link rel="stylesheet" href="css/style.css">
 
 	<!-- <script src="js\vue.global.js" defer></script> -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" defer></script> -->
 	<script src="js\global_snippet.js" defer></script>
-	<!-- <script src="counter\counter.js" defer></script> -->
 	<script src="js\data.js" defer></script>
 	<script src="js\sample_calc.js" defer></script>
 	<script src="js\vue_param_blocks.js" defer></script>
-	<!-- <script src="js\vue_blocks.js" defer></script> -->
 	<script type="module" src="js/main.js"></script>
 
 </head>
 <body>
-
-	<header class="flex_header">
-		<h1 style="display: flex;">
-			<a href="/.." class="main-link home-link">&#9634;</a>
-			<a href="" class="main-link">Калькулятор выборки</a>
+	<header>
+		<h1>
+			<a href="/" class="home-link">▢</a>
+			<a href="">Калькулятор выборки</a>
 		</h1>
 	</header>
 
-
-
 	<div id="app">
-		<fieldset class="subwindow params-fs">
-			<legend>Параметры</legend>
+		<div class="subwindow params-area">
+			<h2>Параметры</h2>
+
 			<div class="params">
 				<div class="param-blocks">
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_calc_type-component" name_text="Тип расчёта"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_base-component" name_text="База"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_oblasts-component" name_text="Области" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_types-component" name_text="Типы" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cities-component" name_text="Города" v-show="cities_show"></param-block>
+					<param-block2 name_text="Тип расчёта" :param_string="param_strings.calc_type">
+						<p_calc_type-component v-model:param_string="param_strings.calc_type"
+							v-model:calc_type="sample_params.calc_type"
+							v-model:calc_type_quotas="sample_params.calc_type_quotas"
+							v-model:calc_type_gender_split="sample_params.calc_type_gender_split"
+							v-model:calc_type_age_split="sample_params.calc_type_age_split"
+						></p_calc_type-component>
+					</param-block2>
+
+					<param-block2 name_text="База" :param_string="param_strings.base">
+						<p_base-component v-model:param_string="param_strings.base" v-model:param="sample_params.base" ></p_base-component>
+					</param-block2>
+
+					<param-block2 name_text="Области" :param_string="param_strings.oblasts" v-show="!cities_show">
+						<p_oblasts_component v-model:param_string="param_strings.oblasts" v-model:param="sample_params.oblasts"></p_oblasts_component>
+					</param-block2>
+
+					<param-block2 name_text="Типы" :param_string="param_strings.types" v-show="!cities_show">
+						<p_types-component v-model:param_string="param_strings.types" v-model:param="sample_params.types"></p_types-component>
+					</param-block2>
+
+					<param-block2 name_text="Города" :param_string="param_strings.cities" v-show="cities_show">
+						<p_cities-component v-model:param_string="param_strings.cities" v-model:param="sample_params.cities"></p_cities-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_type-component" name_text="Стратификация по типу" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_gender-component" name_text="Пол"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age-component" name_text="Возраст"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_age_intervals-component" name_text="Возрастные интервалы" v-show="quota_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_sample_size-component" name_text="Размер" v-show="sample_size_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_cluster_size-component" name_text="Нагрузка на точку" v-show="cluster_show"></param-block>
+
+					<param-block2 name_text="Пол" :param_string="param_strings.gender">
+						<p_gender-component v-model:param_string="param_strings.gender" v-model:param="sample_params.gender" ></p_gender-component>
+					</param-block2>
+
+					<param-block2 name_text="Возраст" :param_string="param_strings.age">
+						<p_age-component v-model:param_string="param_strings.age"
+							v-model:age_more_than="sample_params.age_more_than"
+							v-model:age_less_than="sample_params.age_less_than"
+						></p_age-component>
+					</param-block2>
+
+					<param-block2 name_text="Возрастные интервалы" :param_string="param_strings.age_intervals" v-show="quota_show">
+						<p_age_intervals-component v-model:param_string="param_strings.age_intervals"
+							v-model:param="sample_params.age_intervals"
+							:age_more_than="sample_params.age_more_than"
+							:age_less_than="sample_params.age_less_than"
+						></p_age_intervals-component>
+					</param-block2>
+
+					<param-block2 name_text="Размер" :param_string="param_strings.sample_size" v-show="sample_size_show">
+						<p_sample_size-component v-model:param_string="param_strings.sample_size" v-model:param="sample_params.sample_size"></p_sample_size-component>
+					</param-block2>
+
+					<param-block2 name_text="Нагрузка на точку" :param_string="param_strings.cluster_size" v-show="cluster_show">
+						<p_cluster_size-component v-model:param_string="param_strings.cluster_size" v-model:param="sample_params.cluster_size"></p_cluster_size-component>
+					</param-block2>
 				</div>
 			</div>
 
-			<hr>
 			<button class="button-calc" @click="calc">Посчитать</button>
-		</fieldset>
+		</div>
 
 		<result-block :state="state" :query="query" :data="data" v-show="state != 'off'"></result-block>
 	</div>
@@ -67,6 +103,17 @@
 </html>
 
 
+<template id="param-block2-component">
+	<div class="param-block p_base_vue" :class="{ 'block-opened': is_opened }">
+		<div class="param-header" @click="controls_switch">
+			<div class="param-name">{{ name_text }}</div><div class="param-string">{{ param_string }}</div>
+		</div>
+		<div class="param-controls" v-show="is_opened">
+			<slot></slot>
+		</div>
+	</div>
+</template>
+
 <template id="param-block-component">
 	<div class="param-block p_base_vue" v-bind:class="{ 'block-opened': is_opened }">
 		<div class="param-header" v-on:click="controls_switch">
@@ -74,7 +121,6 @@
 		</div>
 		<div class="param-controls" v-show="controls_visible">
 			<component :is="selected_component" v-model:param_string="param_string" v-model:vue_sample_params_copy="vue_sample_params_copy_2"></component>
-			<!-- <component :is="selected_component" :param_string.sync="param_string" :vue_sample_params_copy.sync="vue_sample_params_copy_2"></component> -->
 		</div>
 	</div>
 </template>
@@ -93,18 +139,10 @@
 	</div>
 </template>
 
-<template id="p_base-component">
-	<div>
-		<template v-for="option in options" :key="option.id">
-			<label><input type="radio" v-model="v_base" name="f_base" :value="option.value">{{ option.text }}</label>
-		</template>
-	</div>
-</template>
-
 <template id="p_oblasts-component">
 	<div>
-		<template v-for="oblast in oblasts" :key="oblast.id">
-			<label><input type="checkbox" :value="oblast" v-model="selected">{{ oblast }}</label>
+		<template v-for="oblast in oblasts">
+			<label><input type="checkbox" :value="oblast" v-model="selected" :disabled="unavailable.includes(oblast)">{{ oblast }}</label>
 		</template>
 
 		<button @click="select_all">Выбрать всё</button>
@@ -117,27 +155,21 @@
 		<table>
 			<thead>
 				<tr>
-					<th></th><th>Город</th><th>Область</th><th>Население</th>
+					<th></th><th>Город</th><th>Область</th><th>Население</th><th>Обл. центр</th>
 				</tr>
 			</thead>
 			<tbody class="f_cities">
 				<tr v-for="city of cities" :key="city.id">
-					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]" :disabled="city[4] == 'NA'"></td>
+					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]"></td>
+					<td><label :for="city[0]">{{ city[1] }}</label></td>
 					<td><label :for="city[0]">{{ city[2] }}</label></td>
-					<td><label :for="city[0]">{{ city[3] }}</label></td>
-					<td class="text_right"><label :for="city[0]">{{ city[4] }}</label></td>
+					<td class="text_right"><label :for="city[0]">{{ city[3] }}</label></td>
+					<td style="text-align: center;"><label :for="city[0]">{{ city[4] }}</label></td>
 				</tr>
 			</tbody>
 		</table>
 		<button @click="clear_selection">Снять выделение</button>
-	</div>
-</template>
-
-<template id="p_types-component">
-	<div>
-		<label><input type="checkbox" v-model="selected" value="Місто">Город</label>
-		<label><input type="checkbox" v-model="selected" value="СМТ">ПГТ</label>
-		<label><input type="checkbox" v-model="selected" value="Село" disabled>Село</label>
+		<button @click="select_centers">Выбрать областные центры</button>
 	</div>
 </template>
 
@@ -152,7 +184,7 @@
 		<label><input type="radio" name="f_population" v-model="selected" value="other">Другое</label>
 		<label><input type="number" class="f_population_custom" min="0" v-model.number="gt">K жителей и больше</label>
 		<label><input type="checkbox" v-model="lt_enabled">Ограничить сверху</label>
-		<label>Менее <input type="number" class="f_population_custom" :disabled="!lt_enabled" min="0" v-model="lt">K жителей</label>
+		<label :class="{'label_disabled': !lt_enabled}">Менее <input type="number" class="f_population_custom" :disabled="!lt_enabled" min="0" v-model="lt">K жителей</label>
 	</div>
 </template>
 
@@ -194,25 +226,17 @@
 </template>
 
 
-<template id="p_gender-component">
-	<div>
-		<label><input type="checkbox" v-model="selected" value="m">Мужчины</label>
-		<label><input type="checkbox" v-model="selected" value="f">Женщины</label>
-	</div>
-</template>
-
-
 <template id="p_age-component">
 	<div>
 		<div class="table collapse">
 			<div class="cell">
-				<input type="number" class="f_age" min="0" max="80" v-model.number="gte" @wheel.prevent="wheel_gte">
+				<input type="number" style="width: 5ch;" min="0" :max="lte" v-model.number="gte">
 			</div>
 			<div class="cell">
 				<span>&nbsp;&ndash;&nbsp;</span>
 			</div>
 			<div class="cell">
-				<input type="number" class="f_age" min="0" max="80" v-model.number="lte" @wheel.prevent="wheel_lte">
+				<input type="number" style="width: 5ch;" :min="gte" max="80" v-model.number="lte">
 			</div>
 		</div>
 	</div>
@@ -222,46 +246,31 @@
 <template id="p_age_intervals-component">
 	<div>
 		<div id="f_age_groups" class="table">
-				<template v-for="ai of age_intervals">
-					<div class="node" v-show="ai.show_node">
-						<div class="node-delim"></div>
-						<div class="node-caption">{{ ai.value }}</div>
-					</div>
+			<template v-for="ai of age_intervals">
+				<div class="node" v-show="ai.show_node">
+					<div class="node-delim"></div>
+					<div class="node-caption">{{ ai.value }}</div>
+				</div>
 
-					<div class="edge e_age_intervals" v-if="ai.value != 80" v-show="ai.show_edge" @click="change_state(ai.value)">
-						<div class="edge-line" :class="{'edge-line-invis': ai.selected}"></div>
-					</div>
-				</template>
+				<div class="edge e_age_intervals" v-if="ai.value != 80" v-show="ai.show_edge" @click="change_state(ai.value)">
+					<div class="edge-line" :class="{'edge-line-invis': ai.selected}"></div>
+				</div>
+			</template>
 		</div>
 		<button class="f_age_groups_reset" @click="reset">Сброс</button>
 	</div>
 </template>
 
-<template id="p_sample_size-component">
-	<div>
-		<input type="number" id="f_ssize" min="0" v-model.number="value" @wheel.prevent="wheel_value">
-	</div>
-</template>
-
-<template id="p_cluster_size-component">
-	<div>
-		<input type="number" id="f_csize" min="0" v-model.number="value" @wheel.prevent="wheel_value">
-	</div>
-</template>
-
 
 <template id="result-block">
-	<fieldset class="subwindow">
-			<legend>Результат</legend>
-
-			<!-- <div v-show="state == 'loading'">Loading</div> -->
-			<!-- <div v-show="state == 'error'">Error</div> -->
+	<div class="subwindow">
+			<h2>Результат</h2>
 
 			<div v-if="state == 'ready'">
 
 				<button class="copy-buttons button-export" @click="copy('table')">Скопировать таблицу в буфер обмена</button>
 				<br>
-				<button class="copy-buttons button-export-cities" v-show="cities_correspondence != ''" @click="copy('cities_correspondence')">Скопировать соответствие городов стратам в буфер обмена</button>
+				<button class="copy-buttons button-export-cities" v-show="data.cities_correspondence != ''" @click="copy('cities_correspondence')">Скопировать соответствие городов стратам в буфер обмена</button>
 				<br>
 
 				<textarea class="hidden-textarea"></textarea>
@@ -289,5 +298,5 @@
 					</tbody>
 				</table>
 			</div>
-	</fieldset>
+	</div>
 </template>
