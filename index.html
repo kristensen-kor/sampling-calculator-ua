@@ -62,7 +62,11 @@
 					</param-block2>
 
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_population-component" name_text="Население" v-show="!cities_show"></param-block>
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_region-component" name_text="Стратификация по региону" v-show="!cities_show"></param-block>
+
+					<param-block2 name_text="Стратификация по региону" :param_string="param_strings.regions" v-show="!cities_show">
+						<p_strata_region-component v-model:param_string="param_strings.regions" v-model:param="sample_params.regions"></p_strata_region-component>
+					</param-block2>
+
 					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_type-component" name_text="Стратификация по типу" v-show="!cities_show"></param-block>
 
 					<param-block2 name_text="Пол" :param_string="param_strings.gender">
@@ -194,13 +198,13 @@
 	<div>
 		<label><input type="radio" name="f_region" v-model="selected" value="none">Не стратифицировать</label>
 		<label><input type="radio" name="f_region" v-model="selected" value="6">6 регионов</label>
-		<label><input type="radio" name="f_region" v-model="selected" value="11" checked>11 регионов</label>
+		<label><input type="radio" name="f_region" v-model="selected" value="11">11 регионов</label>
 		<label><input type="radio" name="f_region" v-model="selected" value="obl">По областям</label>
 		<label><input type="radio" name="f_region" v-model="selected" value="custom">Задать свою</label>
 		<hr>
 		<table>
 			<tbody>
-				<tr v-for="oblast of oblasts" :key="oblast.id">
+				<tr v-for="oblast of oblasts">
 					<td>{{ oblast.name }}</td>
 					<td><input type="text" v-model="oblast.rc" @input="check_regions"></td>
 				</tr>

@@ -330,7 +330,7 @@ const p_population_component = {
 
 
 const p_strata_region_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			oblasts: [
@@ -361,49 +361,42 @@ const p_strata_region_component = {
 				{name: "Чернівецька", r6: "Запад", r11: "Юго-Запад", ro: "", rc: ""},
 				{name: "Чернігівська", r6: "Север", r11: "Север", ro: "", rc: ""}
 			],
-			selected: ""
+			selected: "6"
 		};
 	},
 	methods: {
-		set_selector: function() {
+		check_regions: function() {
 			this.selected = "custom";
 			if (this.oblasts.every(a => a.rc == "")) this.selected = "none";
 			if (this.oblasts.every(a => a.rc == a.r6)) this.selected = "6";
 			if (this.oblasts.every(a => a.rc == a.r11)) this.selected = "11";
 			if (this.oblasts.every(a => a.rc == a.name)) this.selected = "obl";
-
-			this.update_param();
-		},
-		update_param: function() {
-			this.$emit("update:param_string", this.oblasts.map(a => a.name + ": " + a.rc).join(", "));
-			if (this.oblasts.every(a => a.rc == "")) this.$emit("update:param_string", "Не используется");
-			if (this.oblasts.every(a => a.rc == a.r6)) this.$emit("update:param_string", "Стандартные 6");
-			if (this.oblasts.every(a => a.rc == a.r11)) this.$emit("update:param_string", "Стандартные 11");
-			if (this.oblasts.every(a => a.rc == a.name)) this.$emit("update:param_string", "По областям");
-
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, regions: Object.assign({}, ...this.oblasts.map(a => ({[a.name]: a.rc})))});
-		},
-		check_regions: function() {
-			this.set_selector();
 		}
 	},
 	watch: {
-		selected: function(value) {
-			if (value == "none") this.oblasts.forEach(a => a.rc = "");
-			if (value == "6") this.oblasts.forEach(a => a.rc = a.r6);
-			if (value == "11") this.oblasts.forEach(a => a.rc = a.r11);
-			if (value == "obl") this.oblasts.forEach(a => a.rc = a.name);
+		selected: {
+			handler: function(value) {
+				if (value == "none") this.oblasts.forEach(a => a.rc = "");
+				if (value == "6") this.oblasts.forEach(a => a.rc = a.r6);
+				if (value == "11") this.oblasts.forEach(a => a.rc = a.r11);
+				if (value == "obl") this.oblasts.forEach(a => a.rc = a.name);
+			},
+			immediate: true
+		},
+		oblasts: {
+			handler: function() {
+				let param_string = this.oblasts.map(a => a.name + ": " + a.rc).join(", ");
+				if (this.selected == "none") param_string = "Не используется";
+				if (this.selected == "6") param_string = "Стандартные 6";
+				if (this.selected == "11") param_string = "Стандартные 11";
+				if (this.selected == "obl") param_string = "По областям";
 
-			this.update_param();
+				this.$emit("update:param_string", param_string);
+				this.$emit("update:param", Object.assign({}, ...this.oblasts.map(a => ({[a.name]: a.rc}))));
+			},
+			deep: true,
+			immediate: true
 		}
-	},
-	mounted: function() {
-		let xs = this.vue_sample_params_copy["regions"];
-		for (let x of Object.entries(xs)) {
-			this.oblasts.filter(a => a.name == x[0])[0].rc = x[1];
-		}
-
-		this.set_selector();
 	},
 	template: "#p_strata_region-component"
 }
@@ -657,7 +650,7 @@ const param_block = {
 		// "p_cities-component": p_cities_component,
 		// "p_types-component": p_types_component,
 		"p_population-component": p_population_component,
-		"p_strata_region-component": p_strata_region_component,
+		// "p_strata_region-component": p_strata_region_component,
 		"p_strata_type-component": p_strata_type_component
 		// "p_gender-component": p_gender_component,
 		// "p_age-component": p_age_component,
