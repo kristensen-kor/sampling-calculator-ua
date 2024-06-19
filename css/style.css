@@ -41,6 +41,8 @@ button:focus {
 	background-color: var(--bg_100);
 	border-radius: 8px;
 	padding: 0.5rem;
+	margin-right: 1rem;
+	margin-bottom: 1rem;
 }
 
 .result {
@@ -50,7 +52,6 @@ button:focus {
 
 .params-area {
 
-	margin-right: 1rem;
 }
 
 .params {
