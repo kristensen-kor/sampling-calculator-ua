@@ -261,51 +261,21 @@ const p_cities_component = {
 
 
 const p_population_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "population_more_than", "population_less_than"],
 	data: function() {
 		return {
-			lt_state: false
+			lt_enabled: false
 		};
 	},
 	computed: {
+		gt: bind_value("population_more_than"),
+		lt: bind_value("population_less_than"),
 		selected: {
 			get: function() {
-				return ["0", "20", "50", "100", "200", "500"].includes(this.gt) ? this.gt : "other";
+				return [0, 20, 50, 100, 200, 500].includes(this.population_more_than) ? this.population_more_than : "other";
 			},
 			set: function(value) {
-				if (value != "other") this.gt = value;
-			}
-		},
-		gt: {
-			get: function() {
-				return this.vue_sample_params_copy["population more than"];
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population more than": value});
-			}
-		},
-		lt: {
-			get: function() {
-				return this.vue_sample_params_copy["population less than"];
-			},
-			set: function(value) {
-				if (this.lt_enabled) {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": value});
-				}
-			}
-		},
-		lt_enabled: {
-			get: function() {
-				return this.vue_sample_params_copy["population less than"] != 0 || this.lt_state;
-			},
-			set: function(value) {
-				this.lt_state = value;
-
-				if (value && this.lt > 0) {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": value})
-				} else {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": 0})
-				}
+				if (value != "other") this.gt = Number(value);
 			}
 		},
 		ps: function() {
@@ -318,12 +288,15 @@ const p_population_component = {
 		}
 	},
 	watch: {
-		ps: function(value) {
-			this.$emit("update:param_string", value);
+		ps: {
+			handler: function(value) {
+				this.$emit("update:param_string", value);
+			},
+			immediate: true
+		},
+		lt_enabled: function(value) {
+			if (!value) this.lt = 0;
 		}
-	},
-	mounted: function() {
-		this.$emit("update:param_string", this.ps);
 	},
 	template: "#p_population-component"
 };
@@ -631,55 +604,7 @@ const p_cluster_size_component = {
 }
 
 
-
 const param_block = {
-	props: ["selected_component", "name_text", "vue_sample_params_copy"],
-	components: {
-		// "p_calc_type-component": p_calc_type_component,
-		// "p_base-component": p_base_component,
-		// "p_oblasts-component": p_oblasts_component,
-		// "p_cities-component": p_cities_component,
-		// "p_types-component": p_types_component,
-		"p_population-component": p_population_component
-		// "p_strata_region-component": p_strata_region_component,
-		// "p_strata_type-component": p_strata_type_component
-		// "p_gender-component": p_gender_component,
-		// "p_age-component": p_age_component,
-		// "p_age_intervals-component": p_age_intervals_component
-		// "p_sample_size-component": p_sample_size_component,
-		// "p_cluster_size-component": p_cluster_size_component
-	},
-	data: function() {
-		return {
-			is_opened: false,
-			param_string: ""
-		};
-	},
-	computed: {
-		arrow: function() {
-			return this.is_opened ? "\u25BD" : "\u25B7";
-		},
-		controls_visible: function() {
-			return this.is_opened ? true : false;
-		},
-		vue_sample_params_copy_2: {
-			get: function() {
-				return this.vue_sample_params_copy;
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", value);
-			}
-		}
-	},
-	methods: {
-		controls_switch: function() {
-			this.is_opened = !this.is_opened;
-		}
-	},
-	template: "#param-block-component"
-};
-
-const param_block2 = {
 	props: ["name_text", "param_string"],
 	data: function() {
 		return {
@@ -691,7 +616,7 @@ const param_block2 = {
 			this.is_opened = !this.is_opened;
 		}
 	},
-	template: "#param-block2-component"
+	template: "#param-block-component"
 };
 
 // lc 753

@@ -77,11 +77,11 @@ app_config.data = function() {
 
 app_config.components = {
 	"param-block": param_block,
-	"param-block2": param_block2,
 	"p_calc_type-component": p_calc_type_component,
 	"p_base-component": p_base_component,
 	"p_oblasts_component": p_oblasts_component,
 	"p_types-component": p_types_component,
+	"p_population-component": p_population_component,
 	"p_strata_region-component": p_strata_region_component,
 	"p_strata_type-component": p_strata_type_component,
 	"p_cities-component": p_cities_component,
