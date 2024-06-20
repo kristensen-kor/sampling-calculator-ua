@@ -132,16 +132,16 @@ function sample_calc(sample_params) {
 
 			let stratum_type = "";
 
-			if (!sample_params["no_type_stratification"]) {
-				if (sample_params["split points"].length == 0) {
-					stratum_type = sample_params["is_smt_split"] ? x.type : "Міські населені пункти";
+			if (!sample_params.strata_type.no_type_stratification) {
+				if (sample_params.strata_type.split_points.length == 0) {
+					stratum_type = sample_params.strata_type.is_smt_split ? x.type : "Міські населені пункти";
 				} else {
-					if (sample_params["is_smt_split"] && x.type == "СМТ") {
+					if (sample_params.strata_type.is_smt_split && x.type == "СМТ") {
 						stratum_type = x.type;
 					} else {
-						stratum_type = sample_params["split point names"][0];
-						for (let i = 0; i < sample_params["split points"].length; i++) {
-							if (x.population < sample_params["split points"][i] * 1000) stratum_type = sample_params["split point names"][i + 1];
+						stratum_type = sample_params.strata_type.split_point_names[0];
+						for (let i = 0; i < sample_params.strata_type.split_points.length; i++) {
+							if (x.population < sample_params.strata_type.split_points[i] * 1000) stratum_type = sample_params.strata_type.split_point_names[i + 1];
 						}
 					}
 				}

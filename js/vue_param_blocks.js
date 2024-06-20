@@ -403,66 +403,57 @@ const p_strata_region_component = {
 
 
 const p_strata_type_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
-			break_points: [],
+			break_points: [50, 500],
 			no_stratification: false,
-			split_smt: false,
-			break_points_sorted: [],
-			names: []
+			split_smt: false
 		};
 	},
 	computed: {
+		break_points_sorted: function() {
+			return [...new Set(this.break_points.filter(a => a != ""))].sort((a, b) => b - a);
+		},
+		names: function() {
+			let names = [];
+			const bps = this.break_points_sorted;
+
+			if (bps.length > 0) names = [`${bps[0]}k+`, ...iota(bps.length - 1).flatMap(i => [`${bps[i + 1]}k-${bps[i]}k`]), `${bps.at(-1)}k-`];
+
+			if (this.split_smt) names.push("ПГТ");
+
+			return names;
+		},
 		ps: function() {
 			if (this.no_stratification) return "Не используется";
 			if (this.split_smt && this.break_points.length == 0) return "Города, ПГТ, сёла";
-			if (!this.split_smt && this.break_points.length == 0) return "Городcкие и селськие населённые пункты";
-
-			this.break_points_sorted = [...new Set(this.break_points.map(a => a.value).filter(a => a != ""))].sort((a, b) => b - a);
-			this.names = [];
-
-			if (this.break_points_sorted.length > 0) {
-				this.names.push(this.break_points_sorted[0] + "k+");
-
-				for (let i = 0; i < this.break_points_sorted.length - 1; i++) {
-					this.names.push(this.break_points_sorted[i + 1] + "k-" + this.break_points_sorted[i] + "k");
-				}
-
-				this.names.push(this.break_points_sorted[this.break_points_sorted.length - 1] + "k-");
-			}
-
-			if (this.split_smt) this.names.push("ПГТ")
+			if (!this.split_smt && this.break_points.length == 0) return "Городcкие и сельские населённые пункты";
 
 			return this.names.join(", ");
 		}
 	},
 	methods: {
 		add_break_point: function() {
-			this.break_points.push({value: ""});
+			this.break_points.push("");
 		},
-		remove: function(value) {
-			this.break_points = this.break_points.filter(a => a.value != value);
-		},
-	},
-	watch: {
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-
-			if (this.no_stratification) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "no_type_stratification": true});
-				// this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "split points": [], "split point names": []});
-			} else {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "no_type_stratification": false, "split points": this.break_points_sorted, "split point names": this.names, "is_smt_split": this.split_smt});
-			}
+		remove: function(i) {
+			this.break_points.splice(i, 1);
 		}
 	},
-	mounted: function() {
-		this.no_stratification = this.vue_sample_params_copy["no_stratification"];
-		this.smt_split = this.vue_sample_params_copy["is_smt_split"];
-		this.break_points = this.vue_sample_params_copy["split points"].map(a => ({value: a}));
+	watch: {
+		ps: {
+			handler: function(value) {
+				this.$emit("update:param_string", value);
 
-		this.$emit("update:param_string", this.ps);
+				if (this.no_stratification) {
+					this.$emit("update:param", {"no_type_stratification": true});
+				} else {
+					this.$emit("update:param", {"no_type_stratification": false, "split_points": this.break_points_sorted, "split_point_names": this.names, "is_smt_split": this.split_smt});
+				}
+			},
+			immediate: true
+		}
 	},
 	template: "#p_strata_type-component"
 }
@@ -649,9 +640,9 @@ const param_block = {
 		// "p_oblasts-component": p_oblasts_component,
 		// "p_cities-component": p_cities_component,
 		// "p_types-component": p_types_component,
-		"p_population-component": p_population_component,
+		"p_population-component": p_population_component
 		// "p_strata_region-component": p_strata_region_component,
-		"p_strata_type-component": p_strata_type_component
+		// "p_strata_type-component": p_strata_type_component
 		// "p_gender-component": p_gender_component,
 		// "p_age-component": p_age_component,
 		// "p_age_intervals-component": p_age_intervals_component

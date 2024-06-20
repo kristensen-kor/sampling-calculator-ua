@@ -67,7 +67,9 @@
 						<p_strata_region-component v-model:param_string="param_strings.regions" v-model:param="sample_params.regions"></p_strata_region-component>
 					</param-block2>
 
-					<param-block v-model:vue_sample_params_copy="sample_params" selected_component="p_strata_type-component" name_text="Стратификация по типу" v-show="!cities_show"></param-block>
+					<param-block2 name_text="Стратификация по типу" :param_string="param_strings.strata_type" v-show="!cities_show">
+						<p_strata_type-component v-model:param_string="param_strings.strata_type" v-model:param="sample_params.strata_type"></p_strata_type-component>
+					</param-block2>
 
 					<param-block2 name_text="Пол" :param_string="param_strings.gender">
 						<p_gender-component v-model:param_string="param_strings.gender" v-model:param="sample_params.gender" ></p_gender-component>
@@ -164,7 +166,7 @@
 				</tr>
 			</thead>
 			<tbody class="f_cities">
-				<tr v-for="city of cities" :key="city.id">
+				<tr v-for="city of cities">
 					<td><input type="checkbox" v-model="selected_cities" :id="city[0]" :value="city[1]"></td>
 					<td><label :for="city[0]">{{ city[1] }}</label></td>
 					<td><label :for="city[0]">{{ city[2] }}</label></td>
@@ -221,8 +223,8 @@
 		<label><input type="checkbox"  v-model="split_smt">Разделять города и ПГТ?</label><span>Точки разбивки по размеру:</span>
 		<table>
 			<tbody>
-				<tr v-for="break_point of break_points" :key="break_point.id">
-					<td><label><input type="number" class="width_6ch" min="0" v-model.number="break_point.value">k&nbsp;</label></td><td><button @click="remove(break_point.value)">&#10005;</button></td>
+				<tr v-for="(break_point, i) of break_points">
+					<td><label><input type="number" style="width: 7ch;" min="0" v-model.number="break_points[i]">k&nbsp;</label></td><td><button @click="remove(i)">&#10005;</button></td>
 				</tr>
 			</tbody>
 		</table>

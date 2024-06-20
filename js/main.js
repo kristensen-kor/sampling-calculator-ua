@@ -83,6 +83,7 @@ app_config.components = {
 	"p_oblasts_component": p_oblasts_component,
 	"p_types-component": p_types_component,
 	"p_strata_region-component": p_strata_region_component,
+	"p_strata_type-component": p_strata_type_component,
 	"p_cities-component": p_cities_component,
 	"p_gender-component": p_gender_component,
 	"p_age-component": p_age_component,
