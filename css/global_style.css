@@ -13,6 +13,7 @@
 	--bg_900: #2b2b26;
 
 	--primary_50: #f5f5f5;
+	--primary_75: #e3e3e2;
 	--primary_100: #d2d1cf;
 	--primary_200: #afada9;
 	--primary_300: #8b8983;
@@ -23,19 +24,22 @@
 	--primary_800: #1b1a16;
 	--primary_900: #0d0c0b;
 
-	--secondary_300: #c5bcf3;
-	--secondary_400: #b3a8ef;
-	--secondary_500: #a294ec;
-	--secondary_600: #8176bc;
+	--secondary_400: #4a597e;
+	--secondary_500: #203360;
+	--secondary_600: #19284c;
+}
+
+
+
+*, *:before, *:after {
+	box-sizing: border-box;
 }
 
 
 html {
-	box-sizing: border-box;
-
-	& *, *:before, *:after {
-	  box-sizing: inherit;
-	}
+/*	height: 100%;*/
+	width: 100%;
+	min-height: 100vh;
 
 	font-family: sans-serif;
 /*	background-color: var(--bg_100);*/
@@ -53,12 +57,21 @@ html {
 	}
 
 	& body {
+/*		height: 100%;*/
+		width: 100%;
+		min-height: 100vh;
+
 		margin: 0;
 		padding: 2rem;
+/*		height: 100vh;*/
 
 		& button, input, optgroup, select, textarea {
 			font-family: inherit;
 			font-size: 100%;
+		}
+
+		& a:hover {
+			color: var(--bg_600);
 		}
 
 		& input, textarea {
@@ -76,15 +89,18 @@ html {
 
 		& input:not(:disabled):hover, textarea:hover {
 			border: 1px solid var(--primary_600);
+/*			border: 1px solid var(--secondary_400);*/
 		}
 
 		& input:focus, textarea:focus {
-			border: 1px solid var(--secondary_500);
+			border: 1px solid var(--primary_600);
+/*			border: 1px solid var(--secondary_500);*/
+/*			color: var(--secondary_400);*/
 		}
 
 		& label {
-/*			color: var(--secondary_500);*/
 			color: var(--primary_500);
+/*			color: var(--secondary_400);*/
 			transition: color 0.2s;
 		}
 
@@ -131,7 +147,8 @@ header {
 		}
 
 		& .home-link:hover {
-			color: var(--secondary_500);
+/*			color: var(--secondary_400);*/
+			color: var(--bg_600);
 		}
 	}
 }

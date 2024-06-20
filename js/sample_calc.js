@@ -47,13 +47,14 @@ function sample_calc(sample_params) {
 	} else {
 		local_main_db = local_main_db.filter(x => sample_params["oblasts"].includes(x.oblast) && sample_params["types"].includes(x.type));
 
-		if (sample_params["population more than"] != 0) {
-			const population_more = Number(sample_params["population more than"]) * 1000;
+
+		if (sample_params.population_more_than != 0) {
+			const population_more = sample_params.population_more_than * 1000;
 			local_main_db = local_main_db.filter(x => x.population >= population_more);
 		}
 
-		if (sample_params["population less than"] != 0) {
-			const population_less = Number(sample_params["population less than"]) * 1000;
+		if (sample_params.population_less_than != 0) {
+			const population_less = sample_params.population_less_than * 1000;
 			local_main_db = local_main_db.filter(x => x.population <= population_less);
 		}
 	}
@@ -132,16 +133,16 @@ function sample_calc(sample_params) {
 
 			let stratum_type = "";
 
-			if (!sample_params["no_type_stratification"]) {
-				if (sample_params["split points"].length == 0) {
-					stratum_type = sample_params["is_smt_split"] ? x.type : "Міські населені пункти";
+			if (!sample_params.strata_type.no_type_stratification) {
+				if (sample_params.strata_type.split_points.length == 0) {
+					stratum_type = sample_params.strata_type.is_smt_split ? x.type : "Міські населені пункти";
 				} else {
-					if (sample_params["is_smt_split"] && x.type == "СМТ") {
+					if (sample_params.strata_type.is_smt_split && x.type == "СМТ") {
 						stratum_type = x.type;
 					} else {
-						stratum_type = sample_params["split point names"][0];
-						for (let i = 0; i < sample_params["split points"].length; i++) {
-							if (x.population < sample_params["split points"][i] * 1000) stratum_type = sample_params["split point names"][i + 1];
+						stratum_type = sample_params.strata_type.split_point_names[0];
+						for (let i = 0; i < sample_params.strata_type.split_points.length; i++) {
+							if (x.population < sample_params.strata_type.split_points[i] * 1000) stratum_type = sample_params.strata_type.split_point_names[i + 1];
 						}
 					}
 				}

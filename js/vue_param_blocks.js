@@ -261,51 +261,21 @@ const p_cities_component = {
 
 
 const p_population_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "population_more_than", "population_less_than"],
 	data: function() {
 		return {
-			lt_state: false
+			lt_enabled: false
 		};
 	},
 	computed: {
+		gt: bind_value("population_more_than"),
+		lt: bind_value("population_less_than"),
 		selected: {
 			get: function() {
-				return ["0", "20", "50", "100", "200", "500"].includes(this.gt) ? this.gt : "other";
+				return [0, 20, 50, 100, 200, 500].includes(this.population_more_than) ? this.population_more_than : "other";
 			},
 			set: function(value) {
-				if (value != "other") this.gt = value;
-			}
-		},
-		gt: {
-			get: function() {
-				return this.vue_sample_params_copy["population more than"];
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population more than": value});
-			}
-		},
-		lt: {
-			get: function() {
-				return this.vue_sample_params_copy["population less than"];
-			},
-			set: function(value) {
-				if (this.lt_enabled) {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": value});
-				}
-			}
-		},
-		lt_enabled: {
-			get: function() {
-				return this.vue_sample_params_copy["population less than"] != 0 || this.lt_state;
-			},
-			set: function(value) {
-				this.lt_state = value;
-
-				if (value && this.lt > 0) {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": value})
-				} else {
-					this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "population less than": 0})
-				}
+				if (value != "other") this.gt = Number(value);
 			}
 		},
 		ps: function() {
@@ -318,19 +288,22 @@ const p_population_component = {
 		}
 	},
 	watch: {
-		ps: function(value) {
-			this.$emit("update:param_string", value);
+		ps: {
+			handler: function(value) {
+				this.$emit("update:param_string", value);
+			},
+			immediate: true
+		},
+		lt_enabled: function(value) {
+			if (!value) this.lt = 0;
 		}
-	},
-	mounted: function() {
-		this.$emit("update:param_string", this.ps);
 	},
 	template: "#p_population-component"
 };
 
 
 const p_strata_region_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
 			oblasts: [
@@ -361,115 +334,99 @@ const p_strata_region_component = {
 				{name: "Чернівецька", r6: "Запад", r11: "Юго-Запад", ro: "", rc: ""},
 				{name: "Чернігівська", r6: "Север", r11: "Север", ro: "", rc: ""}
 			],
-			selected: ""
+			selected: "6"
 		};
 	},
 	methods: {
-		set_selector: function() {
+		check_regions: function() {
 			this.selected = "custom";
 			if (this.oblasts.every(a => a.rc == "")) this.selected = "none";
 			if (this.oblasts.every(a => a.rc == a.r6)) this.selected = "6";
 			if (this.oblasts.every(a => a.rc == a.r11)) this.selected = "11";
 			if (this.oblasts.every(a => a.rc == a.name)) this.selected = "obl";
-
-			this.update_param();
-		},
-		update_param: function() {
-			this.$emit("update:param_string", this.oblasts.map(a => a.name + ": " + a.rc).join(", "));
-			if (this.oblasts.every(a => a.rc == "")) this.$emit("update:param_string", "Не используется");
-			if (this.oblasts.every(a => a.rc == a.r6)) this.$emit("update:param_string", "Стандартные 6");
-			if (this.oblasts.every(a => a.rc == a.r11)) this.$emit("update:param_string", "Стандартные 11");
-			if (this.oblasts.every(a => a.rc == a.name)) this.$emit("update:param_string", "По областям");
-
-			this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, regions: Object.assign({}, ...this.oblasts.map(a => ({[a.name]: a.rc})))});
-		},
-		check_regions: function() {
-			this.set_selector();
 		}
 	},
 	watch: {
-		selected: function(value) {
-			if (value == "none") this.oblasts.forEach(a => a.rc = "");
-			if (value == "6") this.oblasts.forEach(a => a.rc = a.r6);
-			if (value == "11") this.oblasts.forEach(a => a.rc = a.r11);
-			if (value == "obl") this.oblasts.forEach(a => a.rc = a.name);
+		selected: {
+			handler: function(value) {
+				if (value == "none") this.oblasts.forEach(a => a.rc = "");
+				if (value == "6") this.oblasts.forEach(a => a.rc = a.r6);
+				if (value == "11") this.oblasts.forEach(a => a.rc = a.r11);
+				if (value == "obl") this.oblasts.forEach(a => a.rc = a.name);
+			},
+			immediate: true
+		},
+		oblasts: {
+			handler: function() {
+				let param_string = this.oblasts.map(a => a.name + ": " + a.rc).join(", ");
+				if (this.selected == "none") param_string = "Не используется";
+				if (this.selected == "6") param_string = "Стандартные 6";
+				if (this.selected == "11") param_string = "Стандартные 11";
+				if (this.selected == "obl") param_string = "По областям";
 
-			this.update_param();
+				this.$emit("update:param_string", param_string);
+				this.$emit("update:param", Object.assign({}, ...this.oblasts.map(a => ({[a.name]: a.rc}))));
+			},
+			deep: true,
+			immediate: true
 		}
-	},
-	mounted: function() {
-		let xs = this.vue_sample_params_copy["regions"];
-		for (let x of Object.entries(xs)) {
-			this.oblasts.filter(a => a.name == x[0])[0].rc = x[1];
-		}
-
-		this.set_selector();
 	},
 	template: "#p_strata_region-component"
 }
 
 
 const p_strata_type_component = {
-	props: ["param_string", "vue_sample_params_copy"],
+	props: ["param_string", "param"],
 	data: function() {
 		return {
-			break_points: [],
+			break_points: [50, 500],
 			no_stratification: false,
-			split_smt: false,
-			break_points_sorted: [],
-			names: []
+			split_smt: false
 		};
 	},
 	computed: {
+		break_points_sorted: function() {
+			return [...new Set(this.break_points.filter(a => a != ""))].sort((a, b) => b - a);
+		},
+		names: function() {
+			let names = [];
+			const bps = this.break_points_sorted;
+
+			if (bps.length > 0) names = [`${bps[0]}k+`, ...iota(bps.length - 1).flatMap(i => [`${bps[i + 1]}k-${bps[i]}k`]), `${bps.at(-1)}k-`];
+
+			if (this.split_smt) names.push("ПГТ");
+
+			return names;
+		},
 		ps: function() {
 			if (this.no_stratification) return "Не используется";
 			if (this.split_smt && this.break_points.length == 0) return "Города, ПГТ, сёла";
-			if (!this.split_smt && this.break_points.length == 0) return "Городcкие и селськие населённые пункты";
-
-			this.break_points_sorted = [...new Set(this.break_points.map(a => a.value).filter(a => a != ""))].sort((a, b) => b - a);
-			this.names = [];
-
-			if (this.break_points_sorted.length > 0) {
-				this.names.push(this.break_points_sorted[0] + "k+");
-
-				for (let i = 0; i < this.break_points_sorted.length - 1; i++) {
-					this.names.push(this.break_points_sorted[i + 1] + "k-" + this.break_points_sorted[i] + "k");
-				}
-
-				this.names.push(this.break_points_sorted[this.break_points_sorted.length - 1] + "k-");
-			}
-
-			if (this.split_smt) this.names.push("ПГТ")
+			if (!this.split_smt && this.break_points.length == 0) return "Городcкие и сельские населённые пункты";
 
 			return this.names.join(", ");
 		}
 	},
 	methods: {
 		add_break_point: function() {
-			this.break_points.push({value: ""});
+			this.break_points.push("");
 		},
-		remove: function(value) {
-			this.break_points = this.break_points.filter(a => a.value != value);
-		},
-	},
-	watch: {
-		ps: function(value) {
-			this.$emit("update:param_string", value);
-
-			if (this.no_stratification) {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "no_type_stratification": true});
-				// this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "split points": [], "split point names": []});
-			} else {
-				this.$emit("update:vue_sample_params_copy", {...this.vue_sample_params_copy, "no_type_stratification": false, "split points": this.break_points_sorted, "split point names": this.names, "is_smt_split": this.split_smt});
-			}
+		remove: function(i) {
+			this.break_points.splice(i, 1);
 		}
 	},
-	mounted: function() {
-		this.no_stratification = this.vue_sample_params_copy["no_stratification"];
-		this.smt_split = this.vue_sample_params_copy["is_smt_split"];
-		this.break_points = this.vue_sample_params_copy["split points"].map(a => ({value: a}));
+	watch: {
+		ps: {
+			handler: function(value) {
+				this.$emit("update:param_string", value);
 
-		this.$emit("update:param_string", this.ps);
+				if (this.no_stratification) {
+					this.$emit("update:param", {"no_type_stratification": true});
+				} else {
+					this.$emit("update:param", {"no_type_stratification": false, "split_points": this.break_points_sorted, "split_point_names": this.names, "is_smt_split": this.split_smt});
+				}
+			},
+			immediate: true
+		}
 	},
 	template: "#p_strata_type-component"
 }
@@ -647,55 +604,7 @@ const p_cluster_size_component = {
 }
 
 
-
 const param_block = {
-	props: ["selected_component", "name_text", "vue_sample_params_copy"],
-	components: {
-		// "p_calc_type-component": p_calc_type_component,
-		// "p_base-component": p_base_component,
-		// "p_oblasts-component": p_oblasts_component,
-		// "p_cities-component": p_cities_component,
-		// "p_types-component": p_types_component,
-		"p_population-component": p_population_component,
-		"p_strata_region-component": p_strata_region_component,
-		"p_strata_type-component": p_strata_type_component
-		// "p_gender-component": p_gender_component,
-		// "p_age-component": p_age_component,
-		// "p_age_intervals-component": p_age_intervals_component
-		// "p_sample_size-component": p_sample_size_component,
-		// "p_cluster_size-component": p_cluster_size_component
-	},
-	data: function() {
-		return {
-			is_opened: false,
-			param_string: ""
-		};
-	},
-	computed: {
-		arrow: function() {
-			return this.is_opened ? "\u25BD" : "\u25B7";
-		},
-		controls_visible: function() {
-			return this.is_opened ? true : false;
-		},
-		vue_sample_params_copy_2: {
-			get: function() {
-				return this.vue_sample_params_copy;
-			},
-			set: function(value) {
-				this.$emit("update:vue_sample_params_copy", value);
-			}
-		}
-	},
-	methods: {
-		controls_switch: function() {
-			this.is_opened = !this.is_opened;
-		}
-	},
-	template: "#param-block-component"
-};
-
-const param_block2 = {
 	props: ["name_text", "param_string"],
 	data: function() {
 		return {
@@ -707,7 +616,7 @@ const param_block2 = {
 			this.is_opened = !this.is_opened;
 		}
 	},
-	template: "#param-block2-component"
+	template: "#param-block-component"
 };
 
 // lc 753
