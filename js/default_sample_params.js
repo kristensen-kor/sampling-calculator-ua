@@ -3,7 +3,7 @@ export default {
 	"calc_type_quotas": true,
 	"calc_type_gender_split": true,
 	"calc_type_age_split": true,
-	"base": "2024v1",
+	"base": "2024v2",
 	"oblasts": [
 		"Вінницька",
 		"Волинська",
