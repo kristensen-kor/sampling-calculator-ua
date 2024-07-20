@@ -1,5 +1,5 @@
-import { createApp } from "./vue.esm-browser.js";
-// import { createApp } from "./vue.esm-browser.prod.js";
+// import { createApp } from "./vue.esm-browser.js";
+import { createApp } from "./vue.esm-browser.prod.js";
 
 import default_sample_params from "./default_sample_params.js";
 

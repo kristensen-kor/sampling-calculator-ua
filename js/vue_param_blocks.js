@@ -72,7 +72,7 @@ const p_base_component = {
 	data: function() {
 		return {
 			options: [
-				{value: "2024v1", text: "2024-06 update"}
+				{value: "2024v2", text: "2024-07 update"}
 			]
 		};
 	},
@@ -191,7 +191,7 @@ const p_types_component = {
 		<div>
 			<label><input type="checkbox" v-model="selected" value="Місто">Город</label>
 			<label><input type="checkbox" v-model="selected" value="СМТ">ПГТ</label>
-			<label><input type="checkbox" v-model="selected" value="Село" disabled>Село</label>
+			<label><input type="checkbox" v-model="selected" value="Село">Село</label>
 		</div>`
 };
 
